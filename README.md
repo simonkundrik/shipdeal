@@ -17,12 +17,23 @@ redirect. ShipDeal answers: "what's the cheapest NEW part that actually delivers
 
 - **Region-aware search** — choose your delivery region (EU/UK, US, AU, Global); ShipDeal
   prefers retailers known to ship there and flags shipping caveats.
-- **Honesty gate** — every result is a direct product page, NEW, in-stock (or "stock unknown"
-  flagged), with a working buy link. Wrong-spec (wheel/travel) and used items are rejected.
-- **Cheapest-first** — results sorted by price with the authoritative listing price (fee /
-  financing / shipping-cost numbers are never mistaken for the product price).
-- **Picture + direct link** — each option shows the product image and a real product-page URL.
-- **Selection, not verdict** — multiple genuine options per part so you assemble your own build.
+- **Curated build catalogue** — 10 MTB components (frame, fork, rear shock, wheelset, tires,
+  drivetrain, brakes, cockpit, pedals, saddle) with credible brands, budgets, and wheel/travel
+  style defaults (XC / enduro / freeride / downhill / e-bike).
+- **Multi-store scraping** — searches across a ring of live-scrapable retailers
+  (probikesupply, CRC, Hunt, Box, ICAN, Winspace, Yoeleo, AliExpress) with a scrapable flag.
+- **Stock checker (critical)** — forks must be confirmed IN STOCK (decisive
+  "in stock"/"add to cart" wins over Amazon boilerplate); other parts reject only confirmed
+  out-of-stock, flagging "unknown" honestly.
+- **Exact prices** — every listing price is the authoritative modal price (fee / financing /
+  shipping-cost noise rejected), so forks show their real price and no cheap-looking fork number
+  is wrong.
+- **Filters** — style, wheel size, fork travel, brand, price range, stock status, and component
+  to find the exact product you're looking for.
+- **Add to build** — pick your part per component from the cheapest sellers and assemble the
+  bike; "My Build" panel keeps a running total, saved to `data/builds.json`.
+- **Honesty gate** — every result is a direct product page, NEW, in-stock (or flagged unknown),
+  with a working buy link. Wrong-spec (wheel/travel) and used items are rejected.
 
 ## How it searches
 
