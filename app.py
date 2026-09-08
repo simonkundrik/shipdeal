@@ -21,20 +21,28 @@ def esc(s):
 
 
 def parse_filters(form: dict) -> Filters:
+    """Parse a form into Filters. Accepts both parse_qs list-values and plain scalar dicts."""
+    def _val(key, default):
+        v = form.get(key)
+        if isinstance(v, list):
+            return v[0] if v else default
+        return v if v is not None else default
+
     def _num(key, default):
+        raw = _val(key, None)
         try:
-            return int((form.get(key) or [default])[0])
+            return int(raw)
         except (ValueError, TypeError):  # noqa: BLE001
             return default
     return Filters(
-        style=(form.get("style") or ["enduro"])[0],
-        wheel=(form.get("wheel") or [""])[0],
+        style=_val("style", "enduro"),
+        wheel=_val("wheel", ""),
         travel_min=_num("travel", 0),
-        brand=(form.get("brand") or [""])[0].strip(),
+        brand=_val("brand", "").strip(),
         price_min=_num("min", 0),
         price_max=_num("max", 99999),
-        stock=(form.get("stock") or [""])[0],
-        component=(form.get("component") or [""])[0],
+        stock=_val("stock", ""),
+        component=_val("component", ""),
     )
 
 
@@ -103,6 +111,8 @@ button{{padding:8px 14px;border:0;border-radius:8px;background:#1a6fb6;color:#ff
 <select name='stock'><option value=''>any stock</option><option {'selected' if f.stock=='in_stock' else ''} value='in_stock'>in stock</option></select>
 <button>Search</button></div></form>
 <div class='message'>{esc(message)}</div>
+<div class='message'>Choose a part, press <i>Add to build</i>, open <i>Buy cheapest</i> to order,
+and track your assembled bike in <i>My Build</i>.</div>
 </div>
 <div class='build'><h3>My Build</h3><ul>{my_items}</ul><b>Total: £{my_total}</b></div>
 {''.join(cards)}
