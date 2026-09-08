@@ -48,6 +48,53 @@ Region delivery is a **caveat, not a guarantee**: ShipDeal prefers regional reta
 "shipping unknown" where a retailer doesn't state to-region delivery, so you confirm before
 ordering (mirrors the EU/UK anti-dumping caveat for frames).
 
+## Product spec — for interface design (Claude Design)
+
+ShipDeal is a lightweight marketplace for bike builders. The UI must make the **honesty of a
+deal** instantly visible: real price, confirmed stock, and a working buy link — never a
+misleading cheap number.
+
+**Screens / flows**
+
+1. **Search landing** — a single form: Region (EU/UK, US, AU, Global), Component
+   (frame/fork/rear shock/wheelset/tires/drivetrain/brakes/cockpit/pedals/saddle), free-text
+   query, Brand (optional), Style (XC/enduro/freeride/downhill/e-bike), Wheel (29/27.5), min
+   fork travel, price min/max, and stock (any / in-stock only). One search action.
+
+2. **Results gallery** — one card per genuine product, **cheapest first**. Each card:
+   - product picture (og:image)
+   - brand + name
+   - **exact price** in native currency plus ~GBP conversion
+   - **stock status** as a colour badge (green = in stock, amber = unknown, red = out of stock /
+     rejected) plus the evidence phrase ("in stock", "add to cart")
+   - wheel-size + fork-travel tags (so the exact-spec part is visible)
+   - shipping hint for the chosen region
+   - a primary **"Buy cheapest →"** button (opens the direct product page)
+   - an **"Add to build"** button (adds the pick to the cart)
+
+3. **My Build panel** — persistent side panel listing the chosen part per component with
+   picture, price, buy link, and a **running total in GBP**. Remove buttons per item. Balanced
+   against the gallery so users assemble their bike as they browse.
+
+**Visual direction**
+
+- Bike-industry marketplace tone: clean, price-first, scannable. Cards lay out picture + price
+  + stock badge left-to-right; filters sit in one compact row above the gallery.
+- Stock badge must read at a glance (green/amber/red) with a tooltip for the evidence.
+- Cheap-noise reassurance: surface the "authoritative price" as the official listing price so
+  nobody mistakes a fee/shipping line for the deal.
+- Responsive: cards stack vertically on mobile; filters collapse.
+
+**Data wiring (already implemented — reuse as-is)**
+
+- `catalogue.py` COMPONENTS (component budgets, brands, wheel/travel flags, style defaults)
+- `filters.py` Filters + apply() (style/wheel/travel/brand/price/stock/component)
+- `stock_checker.py` check_stock/passes_stock (fork-strict, evidence string)
+- `price.py` nail_price (authoritative modal price)
+- `builds.py` Pick/add/total/load/save (data/builds.json) — cart persistence
+- `search.py` find_cheapest (multi-retailer Firecrawl search, cheapest-first)
+- `app.py` Handler renders HTML; POST `/build/add` + `/build/remove` drive the cart.
+
 ## Getting started
 
 ```bash
@@ -62,10 +109,17 @@ Open http://localhost:8018, choose your region + part, search, and pick your bui
 ```
 shipdeal/
   README.md
-  app.py          — region-aware search dashboard (http.server)
-  search.py       — Firecrawl search + honesty gate (reused from mtb_deals toolchain)
-  regions.py      — retailer → region shipping hints
+  app.py            — dashboard: search form + filters + gallery + build cart (http.server)
+  search.py         — Firecrawl multi-retailer search (cheapest-first, honesty gate)
+  catalogue.py      — curated MTB build catalogue (components, budgets, style defaults)
+  regions.py        — retailer → region shipping hints + scrapable flags
+  stock_checker.py  — stock gate (forks strictly in stock; evidence string)
+  price.py          — authoritative (exact) price nailing
+  filters.py        — Filters dataclass + apply() predicate
+  builds.py         — build cart (Pick/add/total, persists data/builds.json)
   requirements.txt
+  tests/            — test_catalogue, test_regions, test_stock, test_price, test_filters,
+                      test_builds, test_dashboard (PYTHONPATH=. python3 tests/test_*.py)
 ```
 
 ## Roadmap
