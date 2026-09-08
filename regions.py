@@ -80,3 +80,46 @@ def retailers_for(region):
 
 def shipping_hint(retailer, region):
     return RETAILERS[retailer]["ships"].get(region, "shipping unknown")
+
+
+# Delivery cost per retailer-region, in GBP. free_over_gbp: at/above this price delivery is free.
+# cost_gbp None = delivery unknown (flagged in the UI, never silently assumed zero).
+POSTAGE = {
+    "probikesupply": {"EU/UK": {"cost_gbp": 25.0, "free_over_gbp": None},
+                      "US": {"cost_gbp": 0.0, "free_over_gbp": 0},
+                      "AU": {"cost_gbp": 30.0, "free_over_gbp": None},
+                      "Global": {"cost_gbp": 35.0, "free_over_gbp": 400}},
+    "chainreactioncycles": {"EU/UK": {"cost_gbp": 0.0, "free_over_gbp": 0},
+                            "US": {"cost_gbp": 12.0, "free_over_gbp": 0},
+                            "AU": {"cost_gbp": 15.0, "free_over_gbp": 0},
+                            "Global": {"cost_gbp": 20.0, "free_over_gbp": None}},
+    "huntbikewheels": {"EU/UK": {"cost_gbp": 0.0, "free_over_gbp": 30},
+                       "US": {"cost_gbp": 12.0, "free_over_gbp": 100},
+                       "AU": {"cost_gbp": 15.0, "free_over_gbp": 100},
+                       "Global": {"cost_gbp": 20.0, "free_over_gbp": 150}},
+    "boxcomponents": {"US": {"cost_gbp": 0.0, "free_over_gbp": 0},
+                      "EU/UK": {"cost_gbp": 20.0, "free_over_gbp": 150},
+                      "Global": {"cost_gbp": 20.0, "free_over_gbp": 150}},
+    "amazon": {"US": {"cost_gbp": 0.0, "free_over_gbp": 35},
+               "EU/UK": {"cost_gbp": 5.0, "free_over_gbp": None},
+               "Global": {"cost_gbp": 8.0, "free_over_gbp": None}},
+    "icancycling": {"Global": {"cost_gbp": 30.0, "free_over_gbp": 400}},
+    "winspace": {"Global": {"cost_gbp": 40.0, "free_over_gbp": 400}},
+    "yoeleo": {"Global": {"cost_gbp": 30.0, "free_over_gbp": 350}},
+    "aliexpress": {"Global": {"cost_gbp": 0.0, "free_over_gbp": 0},
+                   "EU/UK": {"cost_gbp": 0.0, "free_over_gbp": 0},
+                   "US": {"cost_gbp": 0.0, "free_over_gbp": 0},
+                   "AU": {"cost_gbp": 0.0, "free_over_gbp": 0}},
+}
+
+
+def delivery_cost_gbp(retailer, region, price_gbp):
+    """Delivery cost to add to the price. cost None = unknown; free_over makes delivery free."""
+    entry = POSTAGE.get(retailer, {}).get(region)
+    if not entry:
+        return None, None
+    free_over = entry["free_over_gbp"]
+    cost = entry["cost_gbp"]
+    if free_over is not None and price_gbp >= free_over:
+        cost = 0.0
+    return cost, free_over
