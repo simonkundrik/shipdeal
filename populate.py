@@ -126,3 +126,13 @@ def cheapest_by_component(component, region="EU/UK"):
     rows = [r for r in db["products"] if r.get("component") == component]
     rows.sort(key=lambda r: (r.get("total_gbp") if r.get("total_gbp") is not None else 1e9))
     return rows
+
+
+def recompute_delivery(db, region="EU/UK"):
+    """Re-apply delivery costs to stored rows (shipping_gbp + total_gbp) for a region."""
+    for r in db["products"]:
+        cost, _free = delivery_cost_gbp(r.get("retailer"), region, r.get("price_gbp"))
+        r["shipping_gbp"] = cost
+        r["total_gbp"] = total_with_delivery(r.get("price_gbp"), cost)
+        r["ships_to"] = region
+    return db
