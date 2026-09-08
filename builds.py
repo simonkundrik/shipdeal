@@ -16,6 +16,7 @@ class Pick:
     url: str
     image: str = ""
     ships: str = ""
+    total_gbp: float = None  # price + delivery; None -> falls back to price_gbp
 
 
 def load():
@@ -28,7 +29,9 @@ def save(picks: dict):
 
 
 def total(picks: dict):
-    return round(sum(p["price_gbp"] for p in picks.values()), 2)
+    """Cart total using delivery-inclusive total_gbp when present, else price_gbp."""
+    return round(sum((p.get("total_gbp") if p.get("total_gbp") is not None else p.get("price_gbp") or 0)
+                     for p in picks.values()), 2)
 
 
 def add(picks: dict, pick: Pick):
