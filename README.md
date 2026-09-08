@@ -22,6 +22,12 @@ redirect. ShipDeal answers: "what's the cheapest NEW part that actually delivers
   style defaults (XC / enduro / freeride / downhill / e-bike).
 - **Multi-store scraping** — searches across a ring of live-scrapable retailers
   (probikesupply, CRC, Hunt, Box, ICAN, Winspace, Yoeleo, AliExpress) with a scrapable flag.
+- **Product database** — `populate.py` fills `data/products.json` across the catalogue; every
+  row carries the authoritative price **plus delivery** (`shipping_gbp` + `total_gbp`), so the
+  cheapest-retailer ranking includes shipping (delivery unknown flagged, never silently free).
+- **Browse catalogue** — `?browse=<component>&region=…` lists products per component sorted by
+  delivery-inclusive total; "Add to build" stores the delivery-inclusive total so the My Build
+  grand total is the real delivered price.
 - **Stock checker (critical)** — forks must be confirmed IN STOCK (decisive
   "in stock"/"add to cart" wins over Amazon boilerplate); other parts reject only confirmed
   out-of-stock, flagging "unknown" honestly.
@@ -124,7 +130,8 @@ shipdeal/
 
 ## Roadmap
 
-- [ ] Region shipping verification (retailer API / to-region delivery lookup per retailer)
-- [ ] Brand filter and exact wheel/travel spec enforcement per style
+- [x] Region shipping verification (per-retailer POSTAGE model + delivery-cost function)
+- [x] Brand filter and exact wheel/travel spec enforcement per style
+- [x] Delivered cost included in every price and build total
+- [x] Saved-build / "My Build" picker panel
 - [ ] Continuous/hourly re-scrapes to refresh cheapest prices (cron collector)
-- [ ] Saved-build / "My Build" picker panel (as in the MTB dashboard)
