@@ -4,6 +4,7 @@ Every product row carries the authoritative price PLUS delivery cost (total_gbp)
 "cheapest retailer" ranking always includes shipping. Dedupe by (url, retailer).
 """
 import json
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -87,6 +88,18 @@ def scrape_item(url, retailer, region, component, brand, name, client):
     return row
 
 
+def collect_links(md, retailer):
+    """Extract genuine product-page URLs from a retailer page, per retailer link shape."""
+    urls = [m.group(1) for m in re.finditer(r"\]\((https?://[^)\s\"]+)\)", md)]
+    if retailer == "amazon":
+        return [u for u in urls if "/dp/" in u]
+    if retailer == "aliexpress":
+        return [u for u in urls if "/item/" in u and "aliexpress" in u]
+    if retailer == "chainreactioncycles":
+        return [u for u in urls if "/product/" in u and "chainreactioncycles" in u]
+    return [u for u in urls if "/products/" in u and "/cdn/" not in u]
+
+
 def populate(component, region="EU/UK", brand="", limit=6, client=None):
     """Scrape the retailer ring for a component, add rows with delivery-inclusive totals."""
     client = client or httpx.Client(timeout=75)
@@ -102,12 +115,7 @@ def populate(component, region="EU/UK", brand="", limit=6, client=None):
             if not md:
                 time.sleep(0.5)
                 continue
-            links = []
-            import re
-            for m in re.finditer(r"\[([^\]]+)\]\(([^)\s]+)\)", md):
-                if "/products/" in m.group(2) and "/cdn/" not in m.group(2) and \
-                        m.group(2) not in links:
-                    links.append(m.group(2))
+            links = collect_links(md, retailer)
             for u in links[:limit]:
                 row = scrape_item(u, retailer, region, component, brand or retailer,
                                   component, client)
