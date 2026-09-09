@@ -72,12 +72,24 @@ button{background:var(--clay);border:0;border-radius:2px;padding:8px 18px;font-f
 .build{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:12px}
 .message{margin:8px 0;color:var(--ink60)}
 .stock-in{color:var(--moss)} .stock-unknown{color:var(--amber)} .stock-out{color:var(--rust)}
+.banner{background:var(--ink);color:var(--paper);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;padding:14px 18px;border-radius:2px}
+.trail{background:#cdd3cb;border:1px solid var(--dust);border-radius:2px;height:260px;display:flex;align-items:center;justify-content:center;color:var(--ink60);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;margin:14px 0}
+.tagline{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink60);margin:4px 0 14px}
+.proof{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.badge{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:12px;flex:1 1 220px}
+.badge b{font-family:'Big Shoulders Display',sans-serif;font-size:1.4rem;color:var(--clay)}
+.badge span{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink)}
+.badge small{color:var(--ink60);display:block;margin-top:4px}
+.ring{border:1px solid var(--dust);border-radius:2px;padding:12px;margin:14px 0;background:var(--paper)}
+.ring b{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
+.footer{margin-top:18px;color:var(--ink60);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;border-top:1px solid var(--dust);padding-top:10px}
 """
 
 
-def render(region="EU/UK", query="", brand="", budget=600, results=None, message="", filters=None):
+def render(country="GB", query="", brand="", budget=600, results=None, message="", filters=None):
     f = filters or Filters()
-    styles = "".join(f"<option {'selected' if r == region else ''}>{r}</option>" for r in REGIONS)
+    country_opts = "".join(f"<option {'selected' if c == country else ''}>{c}</option>"
+                           for c in COUNTRY_INFO)
     comps = "".join(f"<option {'selected' if f.component == c else ''}>{c}</option>"
                     for c in COMPONENTS)
     cards = []
@@ -108,14 +120,28 @@ def render(region="EU/UK", query="", brand="", budget=600, results=None, message
         f"<button onclick='rmFromBuild(\"{esc(p['component'])}\")'>remove</button></li>"
         for p in picks.values())
     my_total = total(picks)
+    proof = """<div class='proof'>
+  <div class='badge'><b>01</b><span>NEW ONLY</span><small>Used and second-hand listings are rejected on the title.</small></div>
+  <div class='badge'><b>02</b><span>STOCK, WITH EVIDENCE</span><small>We quote the phrase that proved it — &ldquo;add to cart&rdquo;, &ldquo;in stock&rdquo;.</small></div>
+  <div class='badge'><b>03</b><span>THE REAL PRICE</span><small>Authoritative modal price. Fees and financing lines thrown out.</small></div>
+  <div class='badge'><b>04</b><span>A LINK THAT LOADS</span><small>Direct product page, checked live. No homepage redirects.</small></div>
+</div>"""
+    retail_ring = " · ".join(k for k in RETAILERS if RETAILERS[k].get("scrapable"))
+    landed_note = (f"Every price here is the landed cost for {esc(country)} — the listing with its "
+                   f"origin VAT stripped, plus that retailer&rsquo;s shipping to your door, plus the "
+                   f"duty, {esc(country)} tax rate and clearance fee you&rsquo;ll actually be billed. "
+                   f"A German listing is not a Swedish price. Confirm at checkout before you order.")
     return f"""<!doctype html><html><head><meta charset='utf-8'>
 <title>ShipDeal — search</title>
 {FONT_LINK}<style>{STYLE}</style></head><body><div class='wrap'>
-<h1>ShipDeal</h1>
-<div class='card'><h3>Find the cheapest {esc(f.component or 'part')} that is NEW, in stock, shipped to your region</h3>
+<div class='banner'>NEW · IN STOCK · LANDED PRICE FOR {esc(country.upper())}</div>
+<div class='trail'>Drop a full-bleed trail shot — rider, dust, treeline</div>
+<h1>THE TRAILHEAD</h1>
+<p class='tagline'>Pick your country, pick a part, one search.</p>
+<div class='card'><h3>Find the cheapest {esc(f.component or 'part')} — NEW, in stock, at your landed price</h3>
 <form method='post'>
 <div class='row'>
-<select name='region'>{styles}</select>
+<select name='country'>{country_opts}</select>
 <select name='component'>{comps}</select>
 <input type='text' name='q' value='{esc(query)}' placeholder='part to search'>
 <input type='text' name='brand' value='{esc(brand)}' placeholder='brand'>
@@ -130,8 +156,12 @@ def render(region="EU/UK", query="", brand="", budget=600, results=None, message
 <div class='message'>Choose a part, press <i>Add to build</i>, open <i>Buy cheapest</i> to order,
 and track your assembled bike in <i>My Build</i>.</div>
 </div>
+{proof}
+<div class='ring'><b>RETAILER RING · LIVE SCRAPE</b><br>{esc(retail_ring)}</div>
+<div class='card'><h3>CHEAPEST FIRST — sorted on landed cost to {esc(country)}</h3><p>{esc(landed_note)}</p></div>
 <div class='build'><h3>My Build</h3><ul>{my_items}</ul><b>Total: £{my_total}</b></div>
 {''.join(cards)}
+<div class='footer'>SHIPDEAL · NO USED · NO DEAD LINKS · NO GENERIC SEARCH JUNK</div>
 </div>
 <script>
 function addToBuild(component,url,brand,price,currency,gbp,image,ships){{
@@ -259,7 +289,7 @@ class Handler(BaseHTTPRequestHandler):
             save(picks)
             self._send("ok", "text/plain")
             return
-        region = (form.get("region") or ["EU/UK"])[0]
+        country = (form.get("country") or ["GB"])[0]
         query = (form.get("q") or [""])[0].strip()
         brand = (form.get("brand") or [""])[0].strip()
         f = parse_filters(form)
@@ -272,8 +302,8 @@ class Handler(BaseHTTPRequestHandler):
             budget = 600
         message, results = "", []
         if query:
-            message = f"searching {query} for {region} (filters: {f.style})"
-            raw = find_cheapest(query, region, brand, budget)
+            message = f"searching {query} for {country} (filters: {f.style})"
+            raw = find_cheapest(query, country, brand, budget)
             results = []
             for o in raw:
                 sd, ev = check_stock(o.get("stock", "unknown"), o.get("component") or comp)
@@ -282,8 +312,8 @@ class Handler(BaseHTTPRequestHandler):
                 o["stock_evidence"] = ev
                 if passes_stock(sd, comp) and apply(o, f):
                     results.append(o)
-            message = f"{len(results)} in-stock options for {query} in {region}"
-        self._send(render(region, query, brand, budget, results, message, f),
+            message = f"{len(results)} in-stock options for {query} in {country}"
+        self._send(render(country, query, brand, budget, results, message, f),
                    "text/html; charset=utf-8")
 
 
