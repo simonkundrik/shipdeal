@@ -12,8 +12,11 @@ from builds import Pick, add, load, save, total
 from catalogue import COMPONENTS, brand_search, style_defaults
 from filters import Filters, apply
 from populate import cheapest_by_component, load_products
-from landed import landed_row
-from regions import COUNTRY_INFO, REGIONS, RETAILERS, country_info, retailers_for, shipping_hint
+from countries import (  # noqa: E402
+    COUNTRY_INFO, REGION_ALIAS, country_info, groups, money, tax_line,
+)
+from landed import landed_row, sort_by_landed
+from regions import REGIONS, RETAILERS, retailers_for, shipping_hint
 from stock_checker import check_stock, passes_stock
 from search import find_cheapest
 
@@ -52,46 +55,63 @@ FONT_LINK = ("<link href='https://fonts.googleapis.com/css2?"
              "family=Big+Shoulders+Display:wght@800&family=Newsreader:ital,wght@0,400;0,500"
              "&family=Barlow+Condensed:wght@700&family=DM+Mono:wght@500' rel='stylesheet'>")
 
-# Trailhead design system (design/export/DESIGN.md): bone paper canvas, pine ink, clay accent,
-# Big Shoulders display caps, Newsreader body, Barlow Condensed labels, DM Mono prices, hairline
-# borders (no shadows), 2px radius cards/badges.
+# Trailhead design system (design/DESIGN.md in the handoff bundle): bone paper canvas, pine ink,
+# clay accent, pill controls, rounded shadowed cards, NO 1px outlines anywhere.
 STYLE = """
-:root{--paper:#F2EDE3;--paper2:#E8E1D4;--dust:#D5CBB8;--ink:#16211C;--ink60:#4E5A52;--clay:#B94A26;--moss:#3E6B44;--amber:#9A6A12;--rust:#9E3427}
-body{font-family:'Newsreader',serif;background:var(--paper);color:var(--ink);margin:0;padding:24px}
-h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-0.02em;line-height:.9;color:var(--ink)}
-.wrap{max-width:1320px;margin:0 auto}
-.card{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:18px}
+:root{--paper:#F2EDE3;--paper2:#EBE4D8;--card:#FBF8F2;--sunken:#EFE8DB;--input:#F1EADD;
+--dust:#D5CBB8;--ink:#16211C;--ink2:#2C3830;--ink60:#4E5A52;--ink40:#8A8578;
+--clay:#B94A26;--clay-light:#E0763F;--clay-pale:#E8B39C;--moss:#3E6B44;--mossT:#2C5333;
+--amber:#9A6A12;--amberT:#6F4C0D;--err:#D9634A;--warn:#D8A23C;--ok:#6FBE7E}
+body{font-family:'Newsreader',Georgia,serif;background:var(--paper);color:var(--ink);margin:0}
+.wrap{max-width:1320px;margin:0 auto;padding:24px}
+h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-.02em;line-height:.88;color:var(--ink)}
+.sticky{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:14px 32px;background:rgba(242,237,227,.92);backdrop-filter:blur(14px)}
+select,input{background:var(--input);border:0;border-radius:999px;padding:8px 14px;min-height:44px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+button,.pill{background:var(--sunken);border:0;border-radius:999px;padding:8px 18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--ink);cursor:pointer;min-height:44px}
+button:hover{background:var(--ink);color:var(--paper)}
+.card,.opt{background:var(--card);border:0;border-radius:26px;padding:22px 28px;box-shadow:0 18px 40px -30px rgba(22,33,28,.45)}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
-select,input{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:8px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
-button{background:#EFE8DB;border:0;border-radius:999px;padding:8px 18px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:#16211C;cursor:pointer}
-button:hover{background:#16211C;color:#F2EDE3}
-.opt{background:var(--paper);border:1px solid var(--dust);border-radius:2px;padding:10px;margin:12px 0;display:flex;gap:10px;align-items:center}
-.opt img{width:90px;height:90px;object-fit:contain}
-.opt .buy{color:#16211C;background:#EFE8DB;padding:7px 14px;border-radius:999px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;display:inline-block}
-.price{font-family:'DM Mono',monospace;font-weight:500}
-.note-dm{background:#EBE4D8;border-radius:18px;padding:14px 18px;font-family:'DM Mono',monospace;font-size:12.5px;color:#6B5A50;margin:14px 0}
-.noimg{width:90px;height:90px;background:var(--dust);display:flex;align-items:center;justify-content:center;color:var(--ink60);font-size:11px}
-.build{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:12px}
-.message{margin:8px 0;color:var(--ink60)}
-.stock-in{color:var(--moss)} .stock-unknown{color:var(--amber)} .stock-out{color:var(--rust)}
-.banner{background:var(--ink);color:var(--paper);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;padding:14px 18px;border-radius:2px}
-.trail{background:#cdd3cb;border:1px solid var(--dust);border-radius:2px;height:260px;display:flex;align-items:center;justify-content:center;color:var(--ink60);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;margin:14px 0}
+.hero{height:clamp(460px,72vh,660px);border-radius:0 0 34px 34px;background:linear-gradient(to top,rgba(22,33,28,.9) 0%,rgba(22,33,28,.45) 45%,rgba(22,33,28,.15) 100%);color:var(--paper);display:flex;align-items:flex-end;padding:40px}
+.gate{background:var(--paper2);display:flex;flex-wrap:wrap;gap:10px;padding:18px;border-radius:18px}
+.badge{background:var(--card);border:0;border-radius:18px;padding:14px;flex:1 1 220px}
+.badge b{font-family:'Big Shoulders Display',sans-serif;font-size:1.4rem;color:var(--clay)}
+.badge span{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.12em}
+.badge small{color:var(--ink60);display:block;margin-top:4px}
+.banner{background:var(--ink);color:var(--paper);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;padding:14px 18px;border-radius:999px}
+.trail{background:#cdd3cb;border-radius:18px;height:260px;display:flex;align-items:center;justify-content:center;color:var(--ink60);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;margin:14px 0}
 .tagline{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink60);margin:4px 0 14px}
 .proof{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
-.badge{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:12px;flex:1 1 220px}
-.badge b{font-family:'Big Shoulders Display',sans-serif;font-size:1.4rem;color:var(--clay)}
-.badge span{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink)}
-.badge small{color:var(--ink60);display:block;margin-top:4px}
-.ring{border:1px solid var(--dust);border-radius:2px;padding:12px;margin:14px 0;background:var(--paper)}
-.ring b{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
-.footer{margin-top:18px;color:var(--ink60);font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;border-top:1px solid var(--dust);padding-top:10px}
+.opt img{width:196px;height:150px;object-fit:contain;background:var(--sunken);border-radius:18px}
+.noimg{width:196px;height:150px;background:var(--sunken);display:flex;align-items:center;justify-content:center;color:var(--ink40);font-size:11px;border-radius:18px}
+.price{font-family:'DM Mono',monospace;font-weight:500}
+.landed{font-family:'DM Mono',monospace;font-weight:500;font-size:30px}
+.breakdown{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--ink60)}
+.mid{flex:1;min-width:0}
+.kicker{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.16em;color:var(--clay)}
+.brand{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:27px;text-transform:uppercase}
+.listed,.dl,.listed-at{font-family:'DM Mono',monospace;font-size:12px;color:var(--ink60)}
+.rail{text-align:right;min-width:220px}
+.buy{background:var(--clay);color:var(--paper);border-radius:999px;padding:14px 20px;text-decoration:none;font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;display:inline-block}
+.buy:hover{background:var(--ink)}
+.stock-in{background:rgba(62,107,68,.15);color:var(--mossT);border-radius:999px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase}
+.stock-unknown{background:rgba(154,106,18,.17);color:var(--amberT);border-radius:999px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase}
+.build{background:var(--ink);color:var(--paper);border-radius:28px;padding:18px;box-shadow:0 28px 60px -36px rgba(22,33,28,.65)}
+.kit{background:var(--ink);color:var(--paper);border-radius:28px;padding:18px;position:sticky;top:92px;box-shadow:0 28px 60px -36px rgba(22,33,28,.65)}
+.ring{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink60)}
+.footer{background:var(--paper2);border-radius:18px;padding:18px;margin-top:18px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
+.message{margin:8px 0;color:var(--ink60)}
+.note-dm{background:var(--paper2);border-radius:999px;padding:8px 18px;font-family:'DM Mono',monospace;font-size:12.5px;color:#6B5A50;margin:14px 0}
 """
+
 
 
 def render(country="GB", query="", brand="", budget=600, results=None, message="", filters=None):
     f = filters or Filters()
-    country_opts = "".join(f"<option {'selected' if c == country else ''}>{c}</option>"
-                           for c in COUNTRY_INFO)
+    country_opts = "".join(
+        "<optgroup label='{}'>".format(esc(g[0])) +
+        "".join("<option {} value='{}'>{}</option>".format(
+            "selected" if cc == country else "", cc, esc(name)) for cc, name in g[1]) +
+        "</optgroup>" for g in groups())
     comps = "".join(f"<option {'selected' if f.component == c else ''}>{c}</option>"
                     for c in COMPONENTS)
     cards = []
@@ -177,44 +197,52 @@ function rmFromBuild(component){{
 </body></html>"""
 
 
-def row_line(row):
-    """HTML card showing exact price + delivery -> total (delivery-unknown flagged)."""
+def row_line(row, country="GB"):
+    """Trailhead result card: landed label, breakdown, delivery line, stock badge, buy pill."""
     img = row.get("image")
     img_html = (f"<img src='{esc(img)}' alt='{esc(row.get('brand'))}' loading='lazy'>" if img
                 else "<div class='noimg'>no image</div>")
-    price_gbp = row.get("price_gbp")
-    ship = row.get("shipping_gbp")
-    total_gbp = row.get("total_gbp")
-    price_txt = f"{esc(row.get('price'))} {esc(row.get('currency'))} (~£{price_gbp})"
-    ship_txt = "delivery unknown" if ship is None else f"+ £{ship} delivery"
-    total_txt = f"= £{total_gbp}" if total_gbp is not None else "(total incl delivery unknown)"
-    landed = row.get("landed_gbp")
-    landed_txt = f"<br>landed: £{landed} (inc VAT/duty)" if landed is not None else ""
-    total_for_cart = row.get("landed_gbp") if row.get("landed_gbp") is not None else total_gbp
-    total_for_cart = total_for_cart if total_for_cart is not None else price_gbp
+    L = row.get("landed") or {}
+    comp = row.get("component") or ""
+    brand = row.get("brand") or ""
+    retailer = esc(row.get("retailer") or "")
+    listed = f"{esc(row.get('price'))} {esc(row.get('currency'))} (~£{esc(row.get('price_gbp'))})"
+    landed_label = esc(L.get("label") or "")
+    breakdown = esc(L.get("breakdown") or "")
+    duty_note = esc(L.get("duty_note") or "")
+    days = L.get("days")
+    origin = esc(L.get("origin") or "")
+    stock = row.get("stock") or "unknown"
+    ev = esc(row.get("stock_evidence") or "")
+    stock_cls = "stock-in" if stock == "in_stock" else "stock-unknown"
+    dl = f"delivered to {esc(country)} in ~{days} days · {duty_note}" if days else \
+        f"delivered to {esc(country)} · {duty_note}"
+    total_for_cart = L.get("total_gbp") if L.get("total_gbp") is not None else row.get("price_gbp")
     return (f"<div class='opt'>{img_html}"
-            f"<div><b>{esc(row.get('brand'))}</b> — {price_txt}<br>{ship_txt} {total_txt}<br>"
-            f"stock: {esc(row.get('stock'))} ({esc(row.get('stock_evidence')) or '—'}) · "
-            f"retailer: {esc(row.get('retailer'))}<br>{esc(row.get('ships_hint') or '')}"
-            f"{landed_txt}</div>"
-            f"<a class='buy' href='{esc(row.get('url'))}' target='_blank'>Buy cheapest →</a>"
-            f"<button onclick='addToBuild(\"{esc(row.get('component'))}\",\"{esc(row.get('url'))}\","
-            f"\"{esc(row.get('brand'))}\",\"{esc(row.get('price'))}\",\"{esc(row.get('currency'))}\","
+            f"<div class='mid'><div class='kicker'>{esc(comp)} · {retailer}</div>"
+            f"<div class='brand'>{esc(brand)}</div>"
+            f"<div class='listed'>{listed}</div>"
+            f"<span class='{stock_cls}'>{esc(stock)} ({ev})</span>"
+            f"<div class='dl'>{dl}</div></div>"
+            f"<div class='rail'><div class='landed'>{landed_label}</div>"
+            f"<div class='breakdown'>{breakdown}</div>"
+            f"<div class='listed-at'>listed {esc(row.get('price'))} {esc(row.get('currency'))} at "
+            f"{retailer} ({origin})</div></div>"
+            f"<a class='buy' href='{esc(row.get('url'))}' target='_blank'>BUY CHEAPEST →</a>"
+            f"<button onclick='addToBuild(\"{esc(comp)}\",\"{esc(row.get('url'))}\","
+            f"\"{esc(brand)}\",\"{esc(row.get('price'))}\",\"{esc(row.get('currency'))}\","
             f"{total_for_cart},\"{esc(row.get('image') or '')}\",\"{esc(row.get('ships_hint') or '')}\")'>"
             f"Add to build</button></div>")
 
 
 def browse_render(components, country="GB", rows=None):
-    """Browse catalogue from the product DB, cheapest landed (tax+duty-inclusive) retailer."""
-    info = country_info(country)
+    """Browse catalogue sorted on landed cost; retailers not delivering are dropped and counted."""
     if rows is None:
         rows = []
         for c in components:
             rows.extend(cheapest_by_component(c, country))
-        for r in rows:
-            r.setdefault("landed_gbp", landed_row(r, info))
-        rows.sort(key=lambda r: r.get("landed_gbp") or 1e9)
-    cards = "".join(row_line(r) for r in rows)
+    priced, hidden = sort_by_landed(rows, country)
+    cards = "".join(row_line(r, country) for r in priced)
     picks = json.loads(load())
     my_items = "".join(
         f"<li>{esc(p['brand'])} — {esc(p['price'])} {esc(p['currency'])} (~£{esc(p['price_gbp'])})"
@@ -224,17 +252,43 @@ def browse_render(components, country="GB", rows=None):
         for p in picks.values())
     my_total = total(picks)
     cname = ", ".join(components)
-    country_opts = "".join(f"<option {'selected' if c == country else ''}>{c}</option>"
-                           for c in COUNTRY_INFO)
+    country_opts = "".join(
+        "<optgroup label='{}'>".format(esc(g[0])) +
+        "".join("<option {} value='{}'>{}</option>".format(
+            "selected" if cc == country else "", cc, esc(name)) for cc, name in g[1]) +
+        "</optgroup>" for g in groups())
+    hidden_note = (f"<div class='note-dm'>{hidden} retailer(s) do not deliver to {esc(country)} "
+                   f"and were not priced</div>" if hidden else "")
+    info = country_info(country)
+    tax = tax_line(country)
     return f"""<!doctype html><html><head><meta charset='utf-8'>
-<title>ShipDeal — browse catalogue</title>
-{FONT_LINK}<style>{STYLE}</style></head><body><div class='wrap'>
-<h1>ShipDeal — Browse catalogue</h1>
-<form method='get'><select name='country'>{country_opts}<button>Switch country</button></form>
-<div class='card'><h3>{esc(cname)} — cheapest landed retailer (tax+duty incl), country {esc(country)}</h3></div>
-<div class='build'><h3>My Build</h3><ul>{my_items}</ul><b>Total: £{my_total} (incl delivery)</b></div>
+<title>ShipDeal — Browse catalogue</title>
+{FONT_LINK}<style>{STYLE}</style></head><body>
+<div class='sticky'>
+<span style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em;text-transform:uppercase">SHIPDEAL</span>
+<span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--clay)">Trail-tested parts index</span>
+<div style="flex:1"></div>
+<div style="text-align:right"><span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--ink60)">{esc(tax)}</span>
+<form method='get'><select name='country'>{country_opts}<button>Switch country</button></form></div>
+<div class='build'>BUILD · £{my_total}</div>
+</div>
+<div class='wrap'>
+<div class='hero'><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--clay-pale)">New · in stock · landed price for {esc(country)}</div>
+<h1 style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(52px,9vw,132px);line-height:.88;letter-spacing:-.025em;text-transform:uppercase;color:#F2EDE3">Parts that make it to the trailhead</h1></div></div>
+<div class='gate'>
+<div class='badge'><b>01</b><span>New only</span><small>Used and second-hand listings are rejected on the title.</small></div>
+<div class='badge'><b>02</b><span>Stock, with evidence</span><small>We quote the phrase that proved it — &ldquo;add to cart&rdquo;, &ldquo;in stock&rdquo;.</small></div>
+<div class='badge'><b>03</b><span>The real price</span><small>Authoritative modal price. Fees and financing lines thrown out.</small></div>
+<div class='badge'><b>04</b><span>A link that loads</span><small>Direct product page, checked live. No homepage redirects.</small></div>
+</div>
+<div class='card'><h3>CHEAPEST FIRST — sorted on the landed cost to {esc(country)}</h3>
+<div class='note-dm'>{esc(info['name'])} · landed price = net + ship + duty + VAT + clearance; same listing priced to DE differs from SE.</div>
+</div>
+{hidden_note}
+<div class='kit'><h3>My Build</h3><ul>{my_items}</ul><b>Landed in {esc(country)}: £{my_total}</b></div>
 {cards}
-<a href='/'>Back to search</a>
+<div class='footer'>SHIPDEAL · NO USED · NO DEAD LINKS · NO GENERIC SEARCH JUNK</div>
+</div>
 <script>
 function addToBuild(component,url,brand,price,currency,gbp,image,ships){{
   fetch('/build/add',{{method:'POST',body:new URLSearchParams({{component,url,brand,price,currency,gbp,String(image),ships}})}})

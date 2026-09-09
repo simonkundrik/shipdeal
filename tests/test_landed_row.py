@@ -1,19 +1,13 @@
-"""RED: landed_row computes the true delivered price per country for a DB row."""
+"""Landed-row tests — new signature landed_row(row, country) reads the retailer off the row."""
 from landed import landed_row
-from regions import country_info
 
-row = {"price_gbp": 100.0, "shipping_gbp": 25.0}
+row = {"price_gbp": 519.0, "retailer": "huntbikewheels"}
+assert landed_row(row, "GB")["total_gbp"] == 519.0  # domestic GB unchanged
 
-gb = country_info("GB")       # vat 0, duty 0
-assert abs(landed_row(row, gb) - 125.0) < 0.01
+row2 = {"price_gbp": 120.0, "retailer": "probikesupply"}  # NL -> GB crossing
+L = landed_row(row2, "GB")
+assert L["vat"] > 0 and L["crossing"] and L["serves"] is True
 
-us = country_info("US")       # goods 100 < de_minimis 640 -> no duty; vat 0
-assert abs(landed_row(row, us) - 125.0) < 0.01
-
-au = country_info("AU")       # GST 10% on taxable
-assert abs(landed_row(row, au) - 137.5) < 0.01
-
-# shipping unknown -> treat as 0 (flagged by caller), not crash
-row2 = {"price_gbp": 120.0, "shipping_gbp": None}
-assert abs(landed_row(row2, gb) - 120.0) < 0.01
+row3 = {"price_gbp": 519.0, "retailer": "yoeleo"}  # no postage for GB zone
+assert landed_row(row3, "GB")["serves"] is False
 print("landed-row tests OK")

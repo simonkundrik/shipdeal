@@ -1,20 +1,23 @@
-"""RED: landed cost — listed price -> FX -> ship -> duty -> VAT -> clearance."""
-from landed import landed_cost
+"""Landed tests — origin-aware model (replaces the old double-taxing landed_cost tests)."""
+from landed import landed
 
-# below de-minimis: no duty/clearance; goods 100*0.80=80 + ship 25 = 105, VAT 20%
-c = landed_cost(list_price=100, currency="USD", fx=0.80, ship=25, duty_rate=0.0,
-                vat_rate=0.20, de_minimis=135, clearance=0)
-assert abs(c - (80 + 25) * 1.20) < 0.01   # = 126.0
+# domestic GB: listed price unchanged, VAT already inside
+L = landed(519.0, "huntbikewheels", "GB")
+assert L["total_gbp"] == 519.0 and L["vat"] == 0.0 and "no border" in L["duty_note"]
 
-# above de-minimis: duty on goods, VAT on taxable, clearance fee
-c2 = landed_cost(list_price=500, currency="USD", fx=0.80, ship=25, duty_rate=0.04,
-                 vat_rate=0.20, de_minimis=135, clearance=10)
-goods_gbp = 400.0
-base = goods_gbp + 25            # 425
-duty = goods_gbp * 0.04          # 16
-vat = (base + duty) * 0.20       # 88.2
-expected = base + duty + vat + 10
-assert abs(c2 - expected) < 0.2  # ~539.2
-assert landed_cost(list_price=1, currency="GBP", fx=1.0, ship=0,
-                   duty_rate=0, vat_rate=0, de_minimis=135, clearance=0) == 1.0
+# intra-EU differs by VAT ratio: SE (25%) > DE (19%) — the whole feature
+assert landed(429.0, "probikesupply", "SE")["total_gbp"] > landed(429.0, "probikesupply", "DE")["total_gbp"]
+
+# EU retailer -> GB crosses customs: duty + 20% VAT + £12 clearance
+L2 = landed(429.0, "probikesupply", "GB")
+assert L2["crossing"] and L2["dutiable"] and L2["duty"] > 0 and L2["clearance"] == 12
+assert "import duty" in L2["duty_note"]
+
+# cheap line under de-minimis: VAT only, no duty
+L3 = landed(41.99, "chainreactioncycles", "GB")
+assert L3["duty"] == 0 and L3["vat"] > 0 and "threshold" in L3["duty_note"]
+
+# retailer not delivering to the zone is dropped, never priced at zero
+L4 = landed(519.0, "yoeleo", "GB")
+assert L4["serves"] is False and L4["total_gbp"] is None
 print("landed tests OK")
