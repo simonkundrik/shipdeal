@@ -187,8 +187,8 @@ and track your assembled bike in <i>My Build</i>.</div>
 <div class='footer'>SHIPDEAL · NO USED · NO DEAD LINKS · NO GENERIC SEARCH JUNK</div>
 </div>
 <script>
-function addToBuild(component,url,brand,price,currency,gbp,image,ships){{
-  fetch('/build/add',{{method:'POST',body:new URLSearchParams({{component,url,brand,price,currency,gbp,String(image),ships}})}})
+function addToBuild(component,url,brand,price,currency,gbp,image,ships,retailer,wheel,travel,stock){{
+  fetch('/build/add',{{method:'POST',body:new URLSearchParams({{component,url,brand,price,currency,gbp,String(image),String(ships)||'',String(retailer)||'',String(wheel)||'',String(travel)||'0',String(stock)||''}})}})
     .then(()=>location.reload());}}
 function rmFromBuild(component){{
   fetch('/build/remove',{{method:'POST',body:new URLSearchParams({{component}})}})
@@ -229,9 +229,11 @@ def row_line(row, country="GB"):
             f"<div class='listed-at'>listed {esc(row.get('price'))} {esc(row.get('currency'))} at "
             f"{retailer} ({origin})</div></div>"
             f"<a class='buy' href='{esc(row.get('url'))}' target='_blank'>BUY CHEAPEST →</a>"
-            f"<button onclick='addToBuild(\"{esc(comp)}\",\"{esc(row.get('url'))}\","
-            f"\"{esc(brand)}\",\"{esc(row.get('price'))}\",\"{esc(row.get('currency'))}\","
-            f"{total_for_cart},\"{esc(row.get('image') or '')}\",\"{esc(row.get('ships_hint') or '')}\")'>"
+            f"<button onclick='addToBuild(\\\"{esc(comp)}\\\",\\\"{esc(row.get('url'))}\\\","
+            f"\\\"{esc(brand)}\\\",\\\"{esc(row.get('price'))}\\\",\\\"{esc(row.get('currency'))}\\\","
+            f"{total_for_cart},\\\"{esc(row.get('image') or '')}\\\",\\\"{esc(row.get('ships_hint') or '')}\\\","
+            f"\\\"{esc(row.get('retailer') or '')}\\\",\\\"{esc(row.get('wheel') or '')}\\\","
+            f"\\\"{esc(row.get('travel') or 0)}\\\",\\\"{esc(row.get('stock') or '')}\\\")'>"
             f"Add to build</button></div>")
 
 
@@ -290,8 +292,8 @@ def browse_render(components, country="GB", rows=None):
 <div class='footer'>SHIPDEAL · NO USED · NO DEAD LINKS · NO GENERIC SEARCH JUNK</div>
 </div>
 <script>
-function addToBuild(component,url,brand,price,currency,gbp,image,ships){{
-  fetch('/build/add',{{method:'POST',body:new URLSearchParams({{component,url,brand,price,currency,gbp,String(image),ships}})}})
+function addToBuild(component,url,brand,price,currency,gbp,image,ships,retailer,wheel,travel,stock){{
+  fetch('/build/add',{{method:'POST',body:new URLSearchParams({{component,url,brand,price,currency,gbp,String(image),String(ships)||'',String(retailer)||'',String(wheel)||'',String(travel)||'0',String(stock)||''}})}})
     .then(()=>location.reload());}}
 function rmFromBuild(component){{
   fetch('/build/remove',{{method:'POST',body:new URLSearchParams({{component}})}})
@@ -334,6 +336,10 @@ class Handler(BaseHTTPRequestHandler):
                      price_gbp=float(form["gbp"][0]) if "gbp" in form else 0.0,
                      image=(form["image"][0] if "image" in form else ""),
                      ships=(form["ships"][0] if "ships" in form else ""),
+                     retailer=(form["retailer"][0] if "retailer" in form else ""),
+                     wheel=(form["wheel"][0] if "wheel" in form else ""),
+                     travel=int(float(form["travel"][0])) if "travel" in form and form["travel"][0] else 0,
+                     stock=(form["stock"][0] if "stock" in form else ""),
                      total_gbp=float(form["gbp"][0]) if "gbp" in form else None)
             picks = json.loads(load())
             save(add(picks, p))

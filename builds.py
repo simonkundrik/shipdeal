@@ -16,6 +16,10 @@ class Pick:
     url: str
     image: str = ""
     ships: str = ""
+    retailer: str = ""  # which retailer the part came from (compat gate + landed model)
+    wheel: str = ""     # wheel size inches, e.g. "29" / "27.5" (compat gate)
+    travel: int = 0     # fork travel mm (compat gate)
+    stock: str = ""     # "in_stock" / "unknown" / "out_of_stock" (compat gate check 5)
     total_gbp: float = None  # price + delivery; None -> falls back to price_gbp
 
 

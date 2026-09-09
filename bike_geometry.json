@@ -1,0 +1,347 @@
+{
+  "projection": {
+    "viewBox": "0 0 1000 630",
+    "px_per_mm": 0.2865,
+    "ground_y": 470,
+    "x": "ox + mm * 0.2865, where ox = tire*S + (1000 - wb*S - 2*tire*S)/2",
+    "y": "470 - mm * 0.2865"
+  },
+  "geo_mm": {
+    "xc": {
+      "tire": 370,
+      "ha": 68,
+      "travel": 120,
+      "wb": 1160,
+      "seat_tube": 460,
+      "post": 340,
+      "dual": false,
+      "motor": false
+    },
+    "enduro": {
+      "tire": 370,
+      "ha": 64,
+      "travel": 170,
+      "wb": 1250,
+      "seat_tube": 430,
+      "post": 330,
+      "dual": false,
+      "motor": false
+    },
+    "freeride": {
+      "tire": 344,
+      "ha": 63,
+      "travel": 180,
+      "wb": 1230,
+      "seat_tube": 390,
+      "post": 220,
+      "dual": false,
+      "motor": false
+    },
+    "downhill": {
+      "tire": 370,
+      "ha": 62,
+      "travel": 200,
+      "wb": 1300,
+      "seat_tube": 340,
+      "post": 60,
+      "dual": true,
+      "motor": false
+    },
+    "ebike": {
+      "tire": 370,
+      "ha": 64,
+      "travel": 170,
+      "wb": 1265,
+      "seat_tube": 430,
+      "post": 330,
+      "dual": false,
+      "motor": true
+    }
+  },
+  "fixed_points_mm": {
+    "rear_axle": [
+      0,
+      "tire"
+    ],
+    "front_axle": [
+      "wb",
+      "tire"
+    ],
+    "bb": [
+      434,
+      345
+    ],
+    "fork_axis": "u = (-cos(ha), sin(ha)); axle_to_crown = travel + 380; crown = front_axle + u*axle_to_crown",
+    "head_tube": "crown + u*14  ->  crown + u*150",
+    "stem": "head_top + u*55",
+    "bar": "stem + (60, 6)",
+    "seat_axis_deg": 76,
+    "seat_top": "bb + s*seat_tube",
+    "saddle": "seat_top + s*post",
+    "shock": "from 0.45*seat_tube up the seat axis to (bb_x*0.5, tire*0.6)",
+    "rocker": "ss_top + (78, -34)  where ss_top = bb + s*0.68*seat_tube",
+    "crank": "bb -> bb + (152, -92)"
+  },
+  "tube_widths_mm": {
+    "seat_to_head": [
+      46,
+      40
+    ],
+    "down_tube": [
+      62,
+      52
+    ],
+    "seat_tube": [
+      50,
+      44
+    ],
+    "head_tube": [
+      62,
+      62
+    ],
+    "chainstay": [
+      48,
+      26
+    ],
+    "seatstay": [
+      34,
+      26
+    ],
+    "rocker": [
+      40,
+      40
+    ],
+    "fork_stanchion": [
+      36,
+      36
+    ],
+    "fork_lower": [
+      44,
+      54
+    ],
+    "crown": [
+      40,
+      34
+    ],
+    "bars": [
+      44,
+      40
+    ],
+    "stem": [
+      34,
+      30
+    ],
+    "grip": [
+      40,
+      40
+    ],
+    "post": [
+      36,
+      34
+    ],
+    "crank": [
+      36,
+      30
+    ],
+    "pedal_plate": [
+      40,
+      40
+    ],
+    "shock": [
+      60,
+      34
+    ]
+  },
+  "wheel": {
+    "casing_r": "tire - casing_mm/2",
+    "tread_ticks": "knob per revolution",
+    "rim_r": "tire - casing_mm - 5",
+    "spokes": 18,
+    "hub_r": 11,
+    "note": "tube quads: offset each end by +/- width/2 along the segment normal"
+  },
+  "ghost_style": {
+    "fill": "none",
+    "stroke": "#5C6A61",
+    "stroke_dasharray": "6 5",
+    "opacity": 0.7
+  },
+  "look": {
+    "fork": {
+      "RockShox": {
+        "stanchion": "#C9A24C",
+        "lower": "#1E2326"
+      },
+      "Fox": {
+        "stanchion": "#D8A62F",
+        "lower": "#191C1F"
+      },
+      "Marzocchi": {
+        "stanchion": "#C9CED3",
+        "lower": "#A5342A"
+      },
+      "Manitou": {
+        "stanchion": "#CDC6E4",
+        "lower": "#3E3266"
+      },
+      "_default": {
+        "stanchion": "#C9A24C",
+        "lower": "#1E2326"
+      }
+    },
+    "frame": {
+      "ICAN": "#2A3032",
+      "Trifox": "#2F3A45",
+      "Dengfu": "#3A4045",
+      "_default": "#E7E1D4"
+    },
+    "wheelset": {
+      "Hunt": "#39403F",
+      "Winspace": "#1B1F21",
+      "Yoeleo": "#1D2123",
+      "Novatec": "#454B4C",
+      "_default": "#39403F"
+    },
+    "tires": {
+      "Maxxis": {
+        "knob": 48,
+        "casing_mm": 20
+      },
+      "Kenda": {
+        "knob": 38,
+        "casing_mm": 17
+      },
+      "Continental": {
+        "knob": 42,
+        "casing_mm": 18
+      },
+      "_default": {
+        "knob": 42,
+        "casing_mm": 18
+      }
+    },
+    "brakes_rotor_mm": {
+      "TRP": 203,
+      "Trickstuff": 203,
+      "Formula": 180,
+      "Magura": 180,
+      "_default": 203
+    },
+    "drivetrain_cogs": {
+      "Box": 9,
+      "Ltwoo": 11,
+      "ZTTO": 11,
+      "Shimano": 12,
+      "_default": 11
+    },
+    "pedals_plate_mm": {
+      "OneUp": 108,
+      "VP": 96,
+      "Wellgo": 92,
+      "_default": 100
+    }
+  },
+  "slots": [
+    {
+      "key": "saddle_post",
+      "n": "10",
+      "label": "Saddle & post",
+      "ty": 54,
+      "side": "left"
+    },
+    {
+      "key": "frame",
+      "n": "01",
+      "label": "Frame",
+      "ty": 126,
+      "side": "left"
+    },
+    {
+      "key": "rear_shock",
+      "n": "03",
+      "label": "Rear shock",
+      "ty": 198,
+      "side": "left"
+    },
+    {
+      "key": "drivetrain",
+      "n": "06",
+      "label": "Drivetrain",
+      "ty": 470,
+      "side": "left"
+    },
+    {
+      "key": "pedals",
+      "n": "09",
+      "label": "Pedals",
+      "ty": 545,
+      "side": "left"
+    },
+    {
+      "key": "cockpit",
+      "n": "08",
+      "label": "Cockpit",
+      "ty": 54,
+      "side": "right"
+    },
+    {
+      "key": "fork",
+      "n": "02",
+      "label": "Fork",
+      "ty": 126,
+      "side": "right"
+    },
+    {
+      "key": "tires",
+      "n": "05",
+      "label": "Tires",
+      "ty": 198,
+      "side": "right"
+    },
+    {
+      "key": "wheelset",
+      "n": "04",
+      "label": "Wheelset",
+      "ty": 470,
+      "side": "right"
+    },
+    {
+      "key": "brakes",
+      "n": "07",
+      "label": "Brakes",
+      "ty": 545,
+      "side": "right"
+    }
+  ],
+  "callout_layout": {
+    "label_box": "top: (ty-20)/630 of the wrapper height, width 21%, 2.4% in from its side",
+    "label_type": "Barlow Condensed 700 15px / .12em / uppercase over DM Mono 12px",
+    "leader_start_x": {
+      "left": 228,
+      "right": 772
+    },
+    "leader_start_y": "ty - 2",
+    "dot_r": {
+      "start": 2.6,
+      "anchor": 5,
+      "halo_when_picked": 11
+    },
+    "colors": {
+      "picked": "#E0763F",
+      "empty": "#5F6C62",
+      "flagged": "#D9634A"
+    }
+  },
+  "anchors": {
+    "frame": "midpoint(seat_top, head_top)",
+    "fork": "fork axis at t = 0.5",
+    "rear_shock": "midpoint(shock ends)",
+    "wheelset": "front axle",
+    "tires": "front axle + (0.72r, -0.72r)",
+    "drivetrain": "rear axle + (16, -18)",
+    "brakes": "front axle + (-26, 6)",
+    "cockpit": "bar + (22, -6)",
+    "pedals": "pedal + (4, 8)",
+    "saddle_post": "saddle + (12, -8)"
+  }
+}
