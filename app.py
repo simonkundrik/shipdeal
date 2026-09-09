@@ -125,7 +125,7 @@ def build_panel(style, picks, country):
     ha, travel, dual = g["ha"], g["travel"], g["dual"]
     wheel = style_defaults(style)["wheel"]
     crown = "dual-crown" if dual else "single-crown"
-    chip_bg = "rgba(224,118,244,.16)" if False else "rgba(150,110,225,.16)"
+    chip_bg = "rgba(224,118,63,.16)"
     issues = compat_issues(style, picks, country)
     flagged_keys = set()
     for issue in issues:
