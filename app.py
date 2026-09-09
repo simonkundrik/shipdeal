@@ -222,11 +222,8 @@ def render(country="GB", query="", brand="", budget=600, results=None, message="
     return f"""<!doctype html><html><head><meta charset='utf-8'>
 <title>ShipDeal — search</title>
 {FONT_LINK}<style>{STYLE}</style></head><body><div class='wrap'>
-<div class='banner'>NEW · IN STOCK · LANDED PRICE FOR {esc(country.upper())}</div>
-<div class='trail'>Drop a full-bleed trail shot — rider, dust, treeline</div>
-<h1>THE TRAILHEAD</h1>
-<p class='tagline'>Pick your country, pick a part, one search.</p>
-<div class='card'><h3>Find the cheapest {esc(f.component or 'part')} — NEW, in stock, at your landed price</h3>
+<div class='hero'><div><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--clay-pale)">New · in stock · landed price for {esc(country)}</div>
+<h1 style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(52px,9vw,132px);line-height:.88;letter-spacing:-.025em;text-transform:uppercase;color:#F2EDE3">Parts that make it to the trailhead</h1></div></div><div class='card'><h3>Find the cheapest {esc(f.component or 'part')} — NEW, in stock, at your landed price</h3>
 <form method='post'>
 <div class='row'>
 <select name='country'>{country_opts}</select>
