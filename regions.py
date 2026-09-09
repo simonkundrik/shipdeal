@@ -163,3 +163,32 @@ COLLECTIONS = {
 
 def collections_for(retailer, component):
     return COLLECTIONS.get(retailer, {}).get(component, [])
+
+
+# Per-country landed-cost parameters (design README integration): VAT/GST, import duty rate,
+# de-minimis threshold (GBP goods value), customs clearance fee, currency, GBP FX.
+# EU members trade duty-free internally (duty applies only for non-EU origin); non-EU
+# countries apply duty past de-minimis. Values are illustrative placeholders to be refined.
+COUNTRY_INFO = {
+    "GB": {"vat_rate": 0.0, "duty_rate": 0.0, "de_minimis": 135, "clearance_fee": 0, "currency": "GBP", "fx": 1.0},
+    "DE": {"vat_rate": 0.19, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "FR": {"vat_rate": 0.20, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "ES": {"vat_rate": 0.21, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "IT": {"vat_rate": 0.22, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "NL": {"vat_rate": 0.21, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "BE": {"vat_rate": 0.21, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "AT": {"vat_rate": 0.20, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "IE": {"vat_rate": 0.23, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "SE": {"vat_rate": 0.25, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "DK": {"vat_rate": 0.25, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "PL": {"vat_rate": 0.23, "duty_rate": 0.0, "de_minimis": 127, "clearance_fee": 0, "currency": "EUR", "fx": 0.85},
+    "US": {"vat_rate": 0.0, "duty_rate": 0.045, "de_minimis": 640, "clearance_fee": 0, "currency": "USD", "fx": 0.80},
+    "CA": {"vat_rate": 0.05, "duty_rate": 0.0, "de_minimis": 160, "clearance_fee": 15, "currency": "CAD", "fx": 0.60},
+    "AU": {"vat_rate": 0.10, "duty_rate": 0.0, "de_minimis": 520, "clearance_fee": 0, "currency": "AUD", "fx": 0.52},
+    "NZ": {"vat_rate": 0.15, "duty_rate": 0.0, "de_minimis": 470, "clearance_fee": 0, "currency": "NZD", "fx": 0.47},
+    "JP": {"vat_rate": 0.10, "duty_rate": 0.02, "de_minimis": 470, "clearance_fee": 20, "currency": "JPY", "fx": 0.0052},
+}
+
+
+def country_info(country):
+    return COUNTRY_INFO.get(country, COUNTRY_INFO["GB"])
