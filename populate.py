@@ -17,7 +17,9 @@ from scraper import (  # noqa: E402
     fetch_scrape, get_image, link_ok, parse_travel, title_relevant, wheel_match,
 )
 from catalogue import COMPONENTS  # noqa: E402
-from regions import RETAILERS, delivery_cost_gbp, shipping_hint  # noqa: E402
+from regions import (  # noqa: E402
+    RETAILERS, delivery_cost_gbp, shipping_hint, collections_for,
+)
 from stock_checker import check_stock, passes_stock  # noqa: E402
 from price import nail_price  # noqa: E402
 
@@ -110,18 +112,20 @@ def populate(component, region="EU/UK", brand="", limit=6, client=None):
         if not RETAILERS[retailer].get("scrapable"):
             continue
         for q in queries:
-            _scan = RETAILERS[retailer]["list"](q.replace(" ", "+"))
-            md = fetch_scrape(_scan, client)
-            if not md:
-                time.sleep(0.5)
-                continue
-            links = collect_links(md, retailer)
-            for u in links[:limit]:
-                row = scrape_item(u, retailer, region, component, brand or retailer,
-                                  component, client)
-                if row:
-                    add_row(db, row)
-                time.sleep(0.4)
+            srcs = [RETAILERS[retailer]["list"](q.replace(" ", "+"))]
+            srcs += collections_for(retailer, component)
+            for src in srcs:
+                md = fetch_scrape(src, client)
+                if not md:
+                    time.sleep(0.5)
+                    continue
+                links = collect_links(md, retailer)
+                for u in links[:limit]:
+                    row = scrape_item(u, retailer, region, component, brand or retailer,
+                                      component, client)
+                    if row:
+                        add_row(db, row)
+                    time.sleep(0.4)
     save_products(db)
     n = len(db["products"])
     print(f"populated {component}: {n} rows in {PRODUCTS_FILE}")

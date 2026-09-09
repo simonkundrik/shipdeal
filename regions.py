@@ -132,3 +132,34 @@ def delivery_cost_gbp(retailer, region, price_gbp):
     if free_over is not None and price_gbp >= free_over:
         cost = 0.0
     return cost, free_over
+
+
+# Collection/category pages per retailer per component — these list many products at once,
+# so browsing them grows the database far beyond single search results.
+COLLECTIONS = {
+    "probikesupply": {
+        "fork": ["https://www.probikesupply.com/collections/downhill-forks",
+                 "https://www.probikesupply.com/collections/forks"],
+        "wheelset": ["https://www.probikesupply.com/collections/wheelsets"],
+        "tires": ["https://www.probikesupply.com/collections/tires"],
+        "rear_shock": ["https://www.probikesupply.com/collections/rear-shocks"],
+        "brakes": ["https://www.probikesupply.com/collections/trp"],
+    },
+    "winspace": {
+        "wheelset": ["https://winspace.cc/search?q=wheelset"],
+        "fork": ["https://winspace.cc/search?q=fork"],
+        "frame": ["https://winspace.cc/search?q=frames"],
+        "tires": ["https://winspace.cc/search?q=tires"],
+    },
+    "huntbikewheels": {
+        "wheelset": ["https://www.huntbikewheels.com/collections/wheelsets"],
+    },
+    "yoeleo": {
+        "wheelset": ["https://www.yoeleo.com/collections/wheelsets"],
+        "saddle_post": ["https://www.yoeleo.com/products/comfort-lightweight-cl-max-saddle"],
+    },
+}
+
+
+def collections_for(retailer, component):
+    return COLLECTIONS.get(retailer, {}).get(component, [])
