@@ -90,7 +90,7 @@ def coverage(db):
     return by_comp, by_comp_ret, empty
 
 
-def main(limit=12, jobs=None):
+def main(limit=6, jobs=None):
     db = load_products()
     lock = threading.Lock()
     all_tasks = tasks()
@@ -103,9 +103,19 @@ def main(limit=12, jobs=None):
         th.start()
         threads.append(th)
 
+    # heartbeat: persist partial progress so a long pull never loses its rows
+    def heartbeat():
+        while any(t.is_alive() for t in threads):
+            with lock:
+                save_products(db)
+            time.sleep(30)
+
+    hb = threading.Thread(target=heartbeat)
+    hb.start()
+
     for th in threads:
         th.join()
-
+    hb.join()
     save_products(db)
 
     by_comp, by_comp_ret, empty = coverage(db)
