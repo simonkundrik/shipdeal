@@ -73,7 +73,7 @@ button,.pill{background:var(--sunken);border:0;border-radius:999px;padding:8px 1
 button:hover{background:var(--ink);color:var(--paper)}
 .card,.opt{background:var(--card);border:0;border-radius:26px;padding:22px 28px;box-shadow:0 18px 40px -30px rgba(22,33,28,.45)}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
-.hero{height:clamp(460px,72vh,660px);border-radius:0 0 34px 34px;background:linear-gradient(to top,rgba(22,33,28,.9) 0%,rgba(22,33,28,.45) 45%,rgba(22,33,28,.15) 100%);color:var(--paper);display:flex;align-items:flex-end;padding:40px}
+.hero{height:clamp(460px,72vh,660px);border-radius:0 0 34px 34px;background:linear-gradient(to top,rgba(22,33,28,.9) 0%,rgba(22,33,28,.45) 45%,rgba(22,33,28,.15) 100%), url('https://images.unsplash.com/photo-1606115915857-c0096c755f5c?fm=jpg&q=80&w=1600&auto=format&fit=crop') no-repeat center / cover;color:var(--paper);display:flex;align-items:flex-end;padding:40px}
 .gate{background:var(--paper2);display:flex;flex-wrap:wrap;gap:10px;padding:18px;border-radius:18px}
 .badge{background:var(--card);border:0;border-radius:18px;padding:14px;flex:1 1 220px}
 .badge b{font-family:'Big Shoulders Display',sans-serif;font-size:1.4rem;color:var(--clay)}
