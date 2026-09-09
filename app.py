@@ -48,6 +48,33 @@ def parse_filters(form: dict) -> Filters:
     )
 
 
+FONT_LINK = ("<link href='https://fonts.googleapis.com/css2?"
+             "family=Big+Shoulders+Display:wght@800&family=Newsreader:ital,wght@0,400;0,500"
+             "&family=Barlow+Condensed:wght@700&family=DM+Mono:wght@500' rel='stylesheet'>")
+
+# Trailhead design system (design/export/DESIGN.md): bone paper canvas, pine ink, clay accent,
+# Big Shoulders display caps, Newsreader body, Barlow Condensed labels, DM Mono prices, hairline
+# borders (no shadows), 2px radius cards/badges.
+STYLE = """
+:root{--paper:#F2EDE3;--paper2:#E8E1D4;--dust:#D5CBB8;--ink:#16211C;--ink60:#4E5A52;--clay:#B94A26;--moss:#3E6B44;--amber:#9A6A12;--rust:#9E3427}
+body{font-family:'Newsreader',serif;background:var(--paper);color:var(--ink);margin:0;padding:24px}
+h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:-0.02em;line-height:.9;color:var(--ink)}
+.wrap{max-width:1320px;margin:0 auto}
+.card{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:18px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
+select,input{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:8px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
+button{background:var(--clay);border:0;border-radius:2px;padding:8px 18px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink);cursor:pointer}
+.opt{background:var(--paper);border:1px solid var(--dust);border-radius:2px;padding:10px;margin:12px 0;display:flex;gap:10px;align-items:center}
+.opt img{width:90px;height:90px;object-fit:contain}
+.opt .buy{color:#fff;background:var(--clay);padding:7px 14px;border-radius:2px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
+.price{font-family:'DM Mono',monospace;font-weight:500}
+.noimg{width:90px;height:90px;background:var(--dust);display:flex;align-items:center;justify-content:center;color:var(--ink60);font-size:11px}
+.build{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:12px}
+.message{margin:8px 0;color:var(--ink60)}
+.stock-in{color:var(--moss)} .stock-unknown{color:var(--amber)} .stock-out{color:var(--rust)}
+"""
+
+
 def render(region="EU/UK", query="", brand="", budget=600, results=None, message="", filters=None):
     f = filters or Filters()
     styles = "".join(f"<option {'selected' if r == region else ''}>{r}</option>" for r in REGIONS)
@@ -82,21 +109,8 @@ def render(region="EU/UK", query="", brand="", budget=600, results=None, message
         for p in picks.values())
     my_total = total(picks)
     return f"""<!doctype html><html><head><meta charset='utf-8'>
-<title>ShipDeal — cheapest factory parts, in stock, shipped to you</title>
-<style>
-body{{font-family:system-ui;margin:0;padding:24px;background:#f4f5f7;color:#222}}
-.wrap{{max-width:980px;margin:0 auto}} h1{{font-size:1.6rem}}
-.card{{background:#fff;padding:18px;border-radius:12px;box-shadow:0 1px 3px #ccc}}
-.row{{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0}}
-select,input{{padding:8px;border:1px solid #bbb;border-radius:8px}}
-button{{padding:8px 14px;border:0;border-radius:8px;background:#1a6fb6;color:#fff;cursor:pointer}}
-.opt{{border:1px solid #e0e0e0;border-radius:10px;padding:10px;margin:12px 0;display:flex;gap:10px;align-items:center}}
-.opt img{{width:90px;height:90px;object-fit:contain}}
-.opt .buy{{color:#fff;background:#18855f;padding:7px 14px;border-radius:8px;text-decoration:none}}
-.noimg{{width:90px;height:90px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;font-size:11px}}
-.build{{background:#eaf3ff;border:1px solid #9cc3e3;border-radius:10px;padding:12px;margin:12px 0}}
-.message{{margin:8px 0;color:#555}}
-</style></head><body><div class='wrap'>
+<title>ShipDeal — search</title>
+{FONT_LINK}<style>{STYLE}</style></head><body><div class='wrap'>
 <h1>ShipDeal</h1>
 <div class='card'><h3>Find the cheapest {esc(f.component or 'part')} that is NEW, in stock, shipped to your region</h3>
 <form method='post'>
@@ -181,18 +195,7 @@ def browse_render(components, country="GB", rows=None):
                            for c in COUNTRY_INFO)
     return f"""<!doctype html><html><head><meta charset='utf-8'>
 <title>ShipDeal — browse catalogue</title>
-<style>
-body{{font-family:system-ui;margin:0;padding:24px;background:#f4f5f7;color:#222}}
-.wrap{{max-width:980px;margin:0 auto}} h1{{font-size:1.6rem}}
-.card{{background:#fff;padding:18px;border-radius:12px;box-shadow:0 1px 3px #ccc}}
-.opt{{border:1px solid #e0e0e0;border-radius:10px;padding:10px;margin:12px 0;display:flex;gap:10px;align-items:center}}
-.opt img{{width:90px;height:90px;object-fit:contain}}
-.opt .buy{{color:#fff;background:#18855f;padding:7px 14px;border-radius:8px;text-decoration:none}}
-.noimg{{width:90px;height:90px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;font-size:11px}}
-button{{padding:8px 14px;border:0;border-radius:8px;background:#1a6fb6;color:#fff;cursor:pointer}}
-.build{{background:#eaf3ff;border:1px solid #9cc3e3;border-radius:10px;padding:12px;margin:12px 0}}
-select{{padding:8px;border:1px solid #bbb;border-radius:8px}}
-</style></head><body><div class='wrap'>
+{FONT_LINK}<style>{STYLE}</style></head><body><div class='wrap'>
 <h1>ShipDeal — Browse catalogue</h1>
 <form method='get'><select name='country'>{country_opts}<button>Switch country</button></form>
 <div class='card'><h3>{esc(cname)} — cheapest landed retailer (tax+duty incl), country {esc(country)}</h3></div>

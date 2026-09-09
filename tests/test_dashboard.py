@@ -14,4 +14,7 @@ assert "Add to build" in page
 assert "My Build" in page
 assert "Choose" in page
 assert "Buy cheapest" in page
+# Trailhead design tokens are applied to the rendered page
+assert "#F2EDE3" in page and "#B94A26" in page and "#16211C" in page
+assert "Big+Shoulders" in page and "DM+Mono" in page
 print("dashboard tests OK")
