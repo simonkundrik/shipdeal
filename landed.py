@@ -18,3 +18,13 @@ def landed_cost(list_price, currency="GBP", fx=1.0, ship=0.0, duty_rate=0.0,
     vat = taxable * vat_rate
     clearance_fee = clearance if crosses else 0.0
     return round(base + duty + vat + clearance_fee, 2)
+
+
+def landed_row(row, info):
+    """True delivered price for a DB row (price_gbp + shipping) under a country's tax/duty."""
+    goods = row.get("price_gbp") or 0.0
+    ship = row.get("shipping_gbp")
+    ship = ship if ship is not None else 0.0
+    return landed_cost(goods, "GBP", 1.0, ship,
+                       info.get("duty_rate", 0), info.get("vat_rate", 0),
+                       info.get("de_minimis", 135), info.get("clearance_fee", 0))

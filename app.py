@@ -12,7 +12,8 @@ from builds import Pick, add, load, save, total
 from catalogue import COMPONENTS, brand_search, style_defaults
 from filters import Filters, apply
 from populate import cheapest_by_component, load_products
-from regions import REGIONS, RETAILERS, retailers_for, shipping_hint
+from landed import landed_row
+from regions import COUNTRY_INFO, REGIONS, RETAILERS, country_info, retailers_for, shipping_hint
 from stock_checker import check_stock, passes_stock
 from search import find_cheapest
 
@@ -140,11 +141,15 @@ def row_line(row):
     price_txt = f"{esc(row.get('price'))} {esc(row.get('currency'))} (~£{price_gbp})"
     ship_txt = "delivery unknown" if ship is None else f"+ £{ship} delivery"
     total_txt = f"= £{total_gbp}" if total_gbp is not None else "(total incl delivery unknown)"
-    total_for_cart = total_gbp if total_gbp is not None else price_gbp
+    landed = row.get("landed_gbp")
+    landed_txt = f"<br>landed: £{landed} (inc VAT/duty)" if landed is not None else ""
+    total_for_cart = row.get("landed_gbp") if row.get("landed_gbp") is not None else total_gbp
+    total_for_cart = total_for_cart if total_for_cart is not None else price_gbp
     return (f"<div class='opt'>{img_html}"
             f"<div><b>{esc(row.get('brand'))}</b> — {price_txt}<br>{ship_txt} {total_txt}<br>"
             f"stock: {esc(row.get('stock'))} ({esc(row.get('stock_evidence')) or '—'}) · "
-            f"retailer: {esc(row.get('retailer'))}<br>{esc(row.get('ships_hint') or '')}</div>"
+            f"retailer: {esc(row.get('retailer'))}<br>{esc(row.get('ships_hint') or '')}"
+            f"{landed_txt}</div>"
             f"<a class='buy' href='{esc(row.get('url'))}' target='_blank'>Buy cheapest →</a>"
             f"<button onclick='addToBuild(\"{esc(row.get('component'))}\",\"{esc(row.get('url'))}\","
             f"\"{esc(row.get('brand'))}\",\"{esc(row.get('price'))}\",\"{esc(row.get('currency'))}\","
@@ -152,13 +157,16 @@ def row_line(row):
             f"Add to build</button></div>")
 
 
-def browse_render(components, region="EU/UK", rows=None):
-    """Browse catalogue from the product DB, cheapest retailer incl delivery."""
+def browse_render(components, country="GB", rows=None):
+    """Browse catalogue from the product DB, cheapest landed (tax+duty-inclusive) retailer."""
+    info = country_info(country)
     if rows is None:
         rows = []
         for c in components:
-            rows.extend(cheapest_by_component(c, region))
-        rows.sort(key=lambda r: (r.get("total_gbp") if r.get("total_gbp") is not None else 1e9))
+            rows.extend(cheapest_by_component(c, country))
+        for r in rows:
+            r.setdefault("landed_gbp", landed_row(r, info))
+        rows.sort(key=lambda r: r.get("landed_gbp") or 1e9)
     cards = "".join(row_line(r) for r in rows)
     picks = json.loads(load())
     my_items = "".join(
@@ -169,6 +177,8 @@ def browse_render(components, region="EU/UK", rows=None):
         for p in picks.values())
     my_total = total(picks)
     cname = ", ".join(components)
+    country_opts = "".join(f"<option {'selected' if c == country else ''}>{c}</option>"
+                           for c in COUNTRY_INFO)
     return f"""<!doctype html><html><head><meta charset='utf-8'>
 <title>ShipDeal — browse catalogue</title>
 <style>
@@ -181,9 +191,11 @@ body{{font-family:system-ui;margin:0;padding:24px;background:#f4f5f7;color:#222}
 .noimg{{width:90px;height:90px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;font-size:11px}}
 button{{padding:8px 14px;border:0;border-radius:8px;background:#1a6fb6;color:#fff;cursor:pointer}}
 .build{{background:#eaf3ff;border:1px solid #9cc3e3;border-radius:10px;padding:12px;margin:12px 0}}
+select{{padding:8px;border:1px solid #bbb;border-radius:8px}}
 </style></head><body><div class='wrap'>
-<h1>ShipDeal — Browse catalogue ({esc(region)})</h1>
-<div class='card'><h3>{esc(cname)} — cheapest retailer incl delivery</h3></div>
+<h1>ShipDeal — Browse catalogue</h1>
+<form method='get'><select name='country'>{country_opts}<button>Switch country</button></form>
+<div class='card'><h3>{esc(cname)} — cheapest landed retailer (tax+duty incl), country {esc(country)}</h3></div>
 <div class='build'><h3>My Build</h3><ul>{my_items}</ul><b>Total: £{my_total} (incl delivery)</b></div>
 {cards}
 <a href='/'>Back to search</a>
@@ -213,8 +225,8 @@ class Handler(BaseHTTPRequestHandler):
             comps = qs.get("component") or list(COMPONENTS.keys())
             if not isinstance(comps, list):
                 comps = [comps]
-            region = (qs.get("region") or ["EU/UK"])[0]
-            self._send(browse_render(comps, region), "text/html; charset=utf-8")
+            country = (qs.get("country") or ["GB"])[0]
+            self._send(browse_render(comps, country), "text/html; charset=utf-8")
         else:
             self._send(render(), "text/html; charset=utf-8")
 
