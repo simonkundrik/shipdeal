@@ -63,11 +63,13 @@ h1{font-family:'Big Shoulders Display',sans-serif;font-weight:800;text-transform
 .card{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:18px}
 .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
 select,input{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:8px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
-button{background:var(--clay);border:0;border-radius:2px;padding:8px 18px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:var(--ink);cursor:pointer}
+button{background:#EFE8DB;border:0;border-radius:999px;padding:8px 18px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;color:#16211C;cursor:pointer}
+button:hover{background:#16211C;color:#F2EDE3}
 .opt{background:var(--paper);border:1px solid var(--dust);border-radius:2px;padding:10px;margin:12px 0;display:flex;gap:10px;align-items:center}
 .opt img{width:90px;height:90px;object-fit:contain}
-.opt .buy{color:#fff;background:var(--clay);padding:7px 14px;border-radius:2px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
+.opt .buy{color:#16211C;background:#EFE8DB;padding:7px 14px;border-radius:999px;text-decoration:none;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em;display:inline-block}
 .price{font-family:'DM Mono',monospace;font-weight:500}
+.note-dm{background:#EBE4D8;border-radius:18px;padding:14px 18px;font-family:'DM Mono',monospace;font-size:12.5px;color:#6B5A50;margin:14px 0}
 .noimg{width:90px;height:90px;background:var(--dust);display:flex;align-items:center;justify-content:center;color:var(--ink60);font-size:11px}
 .build{background:var(--paper2);border:1px solid var(--dust);border-radius:2px;padding:12px}
 .message{margin:8px 0;color:var(--ink60)}
@@ -158,7 +160,8 @@ and track your assembled bike in <i>My Build</i>.</div>
 </div>
 {proof}
 <div class='ring'><b>RETAILER RING · LIVE SCRAPE</b><br>{esc(retail_ring)}</div>
-<div class='card'><h3>CHEAPEST FIRST — sorted on landed cost to {esc(country)}</h3><p>{esc(landed_note)}</p></div>
+<div class='card'><h3>CHEAPEST FIRST — sorted on landed cost to {esc(country)}</h3>
+<div class='note-dm'>{esc(landed_note)}</div></div>
 <div class='build'><h3>My Build</h3><ul>{my_items}</ul><b>Total: £{my_total}</b></div>
 {''.join(cards)}
 <div class='footer'>SHIPDEAL · NO USED · NO DEAD LINKS · NO GENERIC SEARCH JUNK</div>
