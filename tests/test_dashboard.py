@@ -11,13 +11,13 @@ assert f.stock == "in_stock" and f.component == "fork"
 page = render(country="GB", query="fork", brand="Marzocchi", budget=600, results=[],
               message="", filters=f)
 assert "Add to build" in page
-assert "My Build" in page
+assert "buildpanel" in page and "Installed " in page
 assert "Choose" in page
 assert "Buy cheapest" in page
 # Trailhead landing structure from ShipDeal v2.pdf
-assert "THE TRAILHEAD" in page
-assert "NEW · IN STOCK · LANDED PRICE FOR GB" in page
-assert "Pick your country, pick a part, one search." in page
+assert "Parts that make it to the trailhead" in page
+assert "landed price for GB" in page
+assert "New · in stock" in page
 assert "NEW ONLY" in page and "STOCK, WITH EVIDENCE" in page
 assert "THE REAL PRICE" in page and "A LINK THAT LOADS" in page
 assert "RETAILER RING" in page and "probikesupply" in page
