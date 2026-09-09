@@ -103,17 +103,17 @@ button:hover{background:var(--ink);color:var(--paper)}
 .footer{background:var(--paper2);border-radius:18px;padding:18px;margin-top:18px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
 .message{margin:8px 0;color:var(--ink60)}
 .note-dm{background:var(--paper2);border-radius:999px;padding:8px 18px;font-family:'DM Mono',monospace;font-size:12.5px;color:#6B5A50;margin:14px 0}
-.buildpanel{background:var(--ink);color:var(--paper);border-radius:900px;padding:32px}
+.buildpanel{background:var(--ink);color:var(--paper);border-radius:34px;padding:32px 34px 20px}
 .buildpanel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .buildpanel-title{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(28px,3.2vw,42px);text-transform:uppercase;color:var(--paper)}
 .buildpanel-readout{font-family:'DM Mono',monospace;font-weight:500;color:var(--paper);margin-top:4px}
 .buildpanel-chip{color:var(--paper);border-radius:999px;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase}
 .buildpanel-svg{position:relative;width:100%;margin-top:18px}
-.callout{position:absolute;width:150%;font-family:'Barlow Condensed',sans-serif}
+.callout{position:absolute;font-family:'Barlow Condensed',sans-serif}
 .callout-label{font-weight:700;font-size:14px;text-transform:uppercase;padding-left:8px}
 .callout-value{font-family:'DM Mono',monospace;font-weight:500;font-size:12px;padding-left:8px}
-.compat{display:flex;align-items:flex-start;gap:10px;background:rgba(242,237,227,.05);border-radius:242px;padding:14px 18px;margin-top:10px}
-.compat-dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px;margin-top:4px}
+.compat{display:flex;align-items:flex-start;gap:10px;background:rgba(242,237,227,.05);border-radius:18px;padding:14px 18px;margin-top:10px}
+.compat-dot{width:10px;height:10px;border-radius:50%;flex:0 0 10px;margin-top:4px}
 .compat-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase}
 .compat-detail{font-family:'Newsreader',Georgia,serif}
 """
@@ -138,7 +138,6 @@ def build_panel(style, picks, country):
         top = round((ty - 58) / 630 * 100, 2)
         side_css = "left:2.4%" if side == "left" else "right:2.4%"
         status = "flagged" if key in flagged_keys else ("picked" if p else "empty")
-        accent = {"picked": "#E0763F", "empty": "#5F6C62", "flagged": "#D9634A"}[status]
         label_color = "#93A093" if status == "empty" else "#F2EDE3"
         value_color = {"flagged": "#F0937C", "picked": "#E0763F", "empty": "#77836F"}[status]
         if p:
@@ -150,7 +149,7 @@ def build_panel(style, picks, country):
         else:
             value = "not picked"
         callouts.append(
-            f"<div class='callout' style='top:{top}%;{side_css};width:21%;border-left:3px solid {accent}'>"
+            f"<div class='callout' style='top:{top}%;{side_css};width:21%'>"
             f"<div class='callout-label' style='color:{label_color}'>{esc(n)} · {esc(label)}</div>"
             f"<div class='callout-value' style='color:{value_color}'>{value}</div>"
             f"</div>"
@@ -373,7 +372,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):  # noqa: N802
-        qs = parse_qs(urlparse(self.path).query)
+        qs = parse_qs(urlparse(self.path).query, keep_blank_values=True)
         if "browse" in qs:
             comps = qs.get("component") or list(COMPONENTS.keys())
             if not isinstance(comps, list):
