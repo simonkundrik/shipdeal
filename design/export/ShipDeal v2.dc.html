@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#16211C"></rect>
+  <circle cx="72" cy="122" r="26" fill="none" stroke="#B94A26" stroke-width="7"></circle>
+  <circle cx="140" cy="122" r="26" fill="none" stroke="#B94A26" stroke-width="7"></circle>
+  <path d="M72,122 L100,80 L140,122 M100,80 L86,60 M100,80 L128,80" fill="none" stroke="#F2EDE3" stroke-width="7" stroke-linecap="round"></path>
+</svg>
+</template>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="crossorigin" />
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Barlow+Condensed:wght@600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+body{margin:0;background:#F2EDE3}
+a{color:#B94A26;text-decoration:none}
+a:hover{color:#16211C}
+::selection{background:#B94A26;color:#F2EDE3}
+</style>
+</helmet>
+<div style="font-family:'Newsreader',Georgia,serif;background:#F2EDE3;color:#16211C;min-height:100vh;overflow-x:hidden">
+
+  <div style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:14px 32px;background:rgba(242,237,227,.92);backdrop-filter:blur(14px)">
+    <div style="display:flex;align-items:baseline;gap:10px">
+      <span style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em;text-transform:uppercase">Shipdeal</span>
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#B94A26">Trail-tested parts index</span>
+    </div>
+    <div style="flex:1"></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="text-align:right">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#4E5A52">Delivering to</div>
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:#7A8578;margin-top:2px">{{ taxLine }}</div>
+      </div>
+      <select value="{{ country }}" onChange="{{ onCountry }}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:12px 14px;min-height:44px;background:#F1EADD;color:#16211C;border:0;border-radius:999px">
+        <sc-for list="{{ countryGroups }}" as="g" hint-placeholder-count="3">
+          <optgroup label="{{ g.group }}">
+            <sc-for list="{{ g.items }}" as="c" hint-placeholder-count="6">
+              <option value="{{ c.cc }}">{{ c.name }}</option>
+            </sc-for>
+          </optgroup>
+        </sc-for>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 18px;background:#16211C;border-radius:999px">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#B8C3B8">Build</span>
+      <span style="font-family:'DM Mono',monospace;font-weight:500;font-size:15px;color:#F2EDE3">{{ total }}</span>
+    </div>
+  </div>
+
+  <div style="position:relative;height:clamp(460px,72vh,660px);background:#16211C;border-radius:0 0 34px 34px;overflow:hidden">
+    <image-slot id="v2-hero" shape="rect" fit="cover" placeholder="Drop a full-bleed trail shot — rider, dust, treeline"></image-slot>
+    <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(22,33,28,.9) 0%,rgba(22,33,28,.45) 45%,rgba(22,33,28,.15) 100%);pointer-events:none"></div>
+    <div style="position:absolute;inset:0;display:flex;align-items:flex-end;padding:0 32px 48px;pointer-events:none">
+      <div style="max-width:1320px;margin:0 auto;width:100%">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:#E8B39C;margin-bottom:18px">New · in stock · landed price for {{ countryLabel }}</div>
+        <h1 style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(52px,9vw,132px);line-height:.88;letter-spacing:-.025em;text-transform:uppercase;color:#F2EDE3;margin:0;max-width:16ch;text-wrap:balance">Parts that make it to the trailhead</h1>
+        <p style="font-family:'Newsreader',serif;font-size:clamp(17px,1.6vw,21px);line-height:1.5;color:#DCD6C9;max-width:56ch;margin:22px 0 0;text-wrap:pretty">We hunt every retailer that actually delivers to you, bin the used listings, the dead links and the fee-padded prices — then show what the part really costs.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="background:#EBE4D8">
+    <div style="max-width:1320px;margin:0 auto;padding:0 32px;display:flex;flex-wrap:wrap">
+      <sc-for list="{{ gates }}" as="g" hint-placeholder-count="4">
+        <div style="flex:1 1 220px;min-width:0;padding:22px 22px 22px 0;display:flex;gap:14px;align-items:baseline">
+          <span style="font-family:'DM Mono',monospace;font-size:12px;color:#B94A26">{{ g.n }}</span>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase">{{ g.title }}</div>
+            <div style="font-family:'Newsreader',serif;font-size:15px;line-height:1.45;color:#4E5A52;margin-top:3px">{{ g.body }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="padding:64px 32px 0">
+    <div style="max-width:1320px;margin:0 auto">
+      <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+        <h2 style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(30px,3.4vw,44px);letter-spacing:-.02em;text-transform:uppercase;margin:0">The trailhead</h2>
+        <span style="font-family:'Newsreader',serif;font-style:italic;font-size:18px;color:#4E5A52">pick your country, pick a part, one search</span>
+      </div>
+      <div style="background:#FBF8F2;border-radius:26px;padding:26px 28px 28px;box-shadow:0 24px 50px -32px rgba(22,33,28,.4)">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+          <sc-for list="{{ components }}" as="c" hint-placeholder-count="10">
+            <button onClick="{{ c.pick }}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;padding:11px 15px;border-radius:999px;cursor:pointer;border:0;background:#EFE8DB;color:#5A665C;min-height:44px" style-hover="background:#16211C;color:#F2EDE3">
+              {{ c.label }}
+            </button>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:stretch">
+          <div style="flex:1 1 300px;min-width:0;display:flex;align-items:center;gap:12px;background:#F1EADD;border-radius:999px;padding:0 22px">
+            <span style="font-family:'DM Mono',monospace;font-size:14px;color:#B94A26">/</span>
+            <input value="{{ query }}" onChange="{{ onQuery }}" placeholder="rockshox zeb 170 29 boost" style="flex:1;min-width:0;background:transparent;border:0;outline:none;color:#16211C;font-family:'Newsreader',serif;font-size:19px;padding:15px 0" />
+          </div>
+          <select value="{{ style }}" onChange="{{ onStyle }}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:0 14px;min-height:48px;background:#F1EADD;color:#16211C;border:0;border-radius:999px">
+            <option value="xc">XC</option>
+            <option value="enduro">Enduro</option>
+            <option value="freeride">Freeride</option>
+            <option value="downhill">Downhill</option>
+            <option value="ebike">E-bike</option>
+          </select>
+          <select value="{{ wheel }}" onChange="{{ onWheel }}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.08em;text-transform:uppercase;padding:0 14px;min-height:48px;background:#F1EADD;color:#16211C;border:0;border-radius:999px">
+            <option value="">Any wheel</option>
+            <option value="29">29 in</option>
+            <option value="27.5">27.5 in</option>
+          </select>
+          <button onClick="{{ onStock }}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase;padding:0 16px;min-height:48px;border-radius:999px;cursor:pointer;border:0;background:#F1EADD;color:#5A665C" style-hover="background:#16211C;color:#F2EDE3">
+            In stock only · {{ stockLabel }}
+          </button>
+          <button style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:20px;letter-spacing:.02em;text-transform:uppercase;padding:0 34px;min-height:52px;border:0;border-radius:999px;background:#B94A26;color:#F2EDE3;cursor:pointer" style-hover="background:#16211C">Search</button>
+        </div>
+        <div style="display:flex;gap:22px;flex-wrap:wrap;margin-top:20px;font-family:'DM Mono',monospace;font-size:12px;color:#4E5A52">
+          <span>{{ style }} preset → fork {{ preset.fork }}mm · rear {{ preset.rear }}mm · wheel {{ preset.wheel }}in</span>
+          <span>budget band → {{ preset.band }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:56px 32px 0">
+    <div style="max-width:1320px;margin:0 auto;background:#16211C;color:#F2EDE3;border-radius:34px;padding:32px 34px 20px;box-shadow:0 34px 70px -40px rgba(22,33,28,.6)">
+      <div style="display:flex;flex-wrap:wrap;gap:18px;align-items:baseline;justify-content:space-between">
+        <div>
+          <h2 style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(28px,3.2vw,40px);letter-spacing:-.02em;text-transform:uppercase;margin:0">Your {{ styleName }} build</h2>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:#9EAA9E;margin-top:6px">{{ d.readout }}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;background:rgba(224,118,63,.16)">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#E8B39C">Installed</span>
+          <span style="font-family:'DM Mono',monospace;font-size:14px;color:#F2EDE3">{{ pickCount }}/10</span>
+        </div>
+      </div>
+      <div style="position:relative;margin-top:8px">
+      <sc-for list="{{ d.callouts }}" as="c" hint-placeholder-count="10">
+        <div style="position:absolute;top:{{ c.top }};left:{{ c.left }};right:{{ c.right }};width:21%;text-align:{{ c.align }};line-height:1.2;pointer-events:none">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:{{ c.textColor }}">{{ c.n }} · {{ c.label }}</div>
+          <div style="font-family:'DM Mono',monospace;font-size:12px;color:{{ c.valueColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ c.value }}</div>
+        </div>
+      </sc-for>
+      <svg viewBox="0 0 1000 630" style="width:100%;height:auto;display:block" aria-label="bike side profile with the parts you have picked">
+        <g fill="none" stroke-linecap="round">
+          <circle cx="{{ d.wheelR.cx }}" cy="{{ d.wheelR.cy }}" r="{{ d.casing.r }}" stroke="{{ d.casing.stroke }}" stroke-width="{{ d.casing.w }}" stroke-dasharray="{{ d.casing.dash }}" opacity="{{ d.casing.op }}"></circle>
+          <circle cx="{{ d.wheelF.cx }}" cy="{{ d.wheelF.cy }}" r="{{ d.casing.r }}" stroke="{{ d.casing.stroke }}" stroke-width="{{ d.casing.w }}" stroke-dasharray="{{ d.casing.dash }}" opacity="{{ d.casing.op }}"></circle>
+          <sc-for list="{{ d.tread }}" as="t" hint-placeholder-count="60">
+            <line x1="{{ t.x1 }}" y1="{{ t.y1 }}" x2="{{ t.x2 }}" y2="{{ t.y2 }}" stroke="{{ d.casing.tread }}" stroke-width="3.4" opacity="{{ d.casing.op }}"></line>
+          </sc-for>
+          <sc-for list="{{ d.spokes }}" as="s" hint-placeholder-count="36">
+            <line x1="{{ s.x1 }}" y1="{{ s.y1 }}" x2="{{ s.x2 }}" y2="{{ s.y2 }}" stroke="{{ d.rim.color }}" stroke-width="1.1" opacity="0.75"></line>
+          </sc-for>
+          <circle cx="{{ d.wheelR.cx }}" cy="{{ d.wheelR.cy }}" r="{{ d.rim.r }}" stroke="{{ d.rim.color }}" stroke-width="{{ d.rim.w }}" stroke-dasharray="{{ d.rim.dash }}" opacity="{{ d.rim.op }}"></circle>
+          <circle cx="{{ d.wheelF.cx }}" cy="{{ d.wheelF.cy }}" r="{{ d.rim.r }}" stroke="{{ d.rim.color }}" stroke-width="{{ d.rim.w }}" stroke-dasharray="{{ d.rim.dash }}" opacity="{{ d.rim.op }}"></circle>
+        </g>
+
+        <g fill="none" opacity="{{ d.brake.op }}">
+          <circle cx="{{ d.brake.rotor.cx }}" cy="{{ d.brake.rotor.cy }}" r="{{ d.brake.rotor.r }}" stroke="{{ d.brake.fill }}" stroke-width="3" stroke-dasharray="{{ d.brake.dash }}"></circle>
+          <sc-for list="{{ d.brake.slots }}" as="s" hint-placeholder-count="16">
+            <line x1="{{ s.x1 }}" y1="{{ s.y1 }}" x2="{{ s.x2 }}" y2="{{ s.y2 }}" stroke="{{ d.brake.fill }}" stroke-width="1.6" opacity="0.6"></line>
+          </sc-for>
+          <polygon points="{{ d.brake.caliper.points }}" fill="{{ d.brake.fill }}" stroke="{{ d.brake.stroke }}" stroke-width="1"></polygon>
+        </g>
+
+        <g opacity="{{ d.drive.op }}">
+          <sc-for list="{{ d.drive.cogs }}" as="c" hint-placeholder-count="11">
+            <circle cx="{{ c.cx }}" cy="{{ c.cy }}" r="{{ c.r }}" fill="none" stroke="{{ d.drive.fill }}" stroke-width="1.6" stroke-dasharray="{{ d.drive.dash }}"></circle>
+          </sc-for>
+          <circle cx="{{ d.drive.ring.cx }}" cy="{{ d.drive.ring.cy }}" r="{{ d.drive.ring.r }}" fill="none" stroke="{{ d.drive.fill }}" stroke-width="3" stroke-dasharray="{{ d.drive.dash }}"></circle>
+          <sc-for list="{{ d.drive.teeth }}" as="t" hint-placeholder-count="32">
+            <line x1="{{ t.x1 }}" y1="{{ t.y1 }}" x2="{{ t.x2 }}" y2="{{ t.y2 }}" stroke="{{ d.drive.fill }}" stroke-width="1.6"></line>
+          </sc-for>
+          <sc-for list="{{ d.drive.chain }}" as="c" hint-placeholder-count="2">
+            <path d="{{ c.d }}" fill="none" stroke="{{ d.drive.fill }}" stroke-width="2.4" stroke-dasharray="3 2"></path>
+          </sc-for>
+          <polygon points="{{ d.drive.cage.points }}" fill="{{ d.drive.fill }}" stroke="none" opacity="0.9"></polygon>
+          <sc-for list="{{ d.drive.pulleys }}" as="p" hint-placeholder-count="2">
+            <circle cx="{{ p.cx }}" cy="{{ p.cy }}" r="{{ p.r }}" fill="none" stroke="{{ d.drive.fill }}" stroke-width="2"></circle>
+          </sc-for>
+        </g>
+
+        <sc-if value="{{ d.motor.show }}" hint-placeholder-val="{{ false }}">
+          <polygon points="{{ d.motor.points }}" fill="#2E3A34" stroke="#495449" stroke-width="1.5"></polygon>
+        </sc-if>
+
+        <g opacity="{{ d.frame.op }}">
+          <sc-for list="{{ d.frame.tubes }}" as="t" hint-placeholder-count="7">
+            <polygon points="{{ t.points }}" fill="{{ d.frame.fill }}" stroke="{{ d.frame.stroke }}" stroke-width="1.6" stroke-dasharray="{{ d.frame.dash }}"></polygon>
+          </sc-for>
+        </g>
+
+        <g opacity="{{ d.shock.op }}">
+          <polygon points="{{ d.shock.body.points }}" fill="{{ d.shock.fill }}" stroke="{{ d.shock.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.shock.dash }}"></polygon>
+          <circle cx="{{ d.shock.can.cx }}" cy="{{ d.shock.can.cy }}" r="{{ d.shock.can.r }}" fill="{{ d.shock.fill }}" stroke="{{ d.shock.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.shock.dash }}"></circle>
+        </g>
+
+        <g opacity="{{ d.fork.op }}">
+          <polygon points="{{ d.fork.stanch.points }}" fill="{{ d.fork.stanch.color }}" stroke="{{ d.fork.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.fork.dash }}"></polygon>
+          <sc-for list="{{ d.fork.lower }}" as="l" hint-placeholder-count="1">
+            <polygon points="{{ l.points }}" fill="{{ d.fork.fill }}" stroke="{{ d.fork.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.fork.dash }}"></polygon>
+          </sc-for>
+          <sc-for list="{{ d.fork.crowns }}" as="c" hint-placeholder-count="1">
+            <polygon points="{{ c.points }}" fill="{{ d.fork.fill }}" stroke="{{ d.fork.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.fork.dash }}"></polygon>
+          </sc-for>
+        </g>
+
+        <g opacity="{{ d.bars.op }}">
+          <sc-for list="{{ d.bars.parts }}" as="b" hint-placeholder-count="2">
+            <polygon points="{{ b.points }}" fill="{{ d.bars.fill }}" stroke="{{ d.bars.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.bars.dash }}"></polygon>
+          </sc-for>
+          <polygon points="{{ d.bars.grip.points }}" fill="{{ d.bars.fill }}" stroke="{{ d.bars.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.bars.dash }}"></polygon>
+        </g>
+
+        <g opacity="{{ d.saddleP.op }}">
+          <polygon points="{{ d.saddleP.post.points }}" fill="{{ d.saddleP.fill }}" stroke="{{ d.saddleP.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.saddleP.dash }}"></polygon>
+          <path d="{{ d.saddleP.path }}" fill="{{ d.saddleP.fill }}" stroke="{{ d.saddleP.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.saddleP.dash }}"></path>
+        </g>
+
+        <g opacity="{{ d.pedals.op }}">
+          <polygon points="{{ d.pedals.crank.points }}" fill="{{ d.pedals.fill }}" stroke="{{ d.pedals.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.pedals.dash }}"></polygon>
+          <polygon points="{{ d.pedals.plate.points }}" fill="{{ d.pedals.fill }}" stroke="{{ d.pedals.stroke }}" stroke-width="1.4" stroke-dasharray="{{ d.pedals.dash }}"></polygon>
+        </g>
+
+        <g fill="none">
+          <circle cx="{{ d.wheelR.cx }}" cy="{{ d.wheelR.cy }}" r="{{ d.hubR }}" fill="#C6CCC8" opacity="{{ d.rim.op }}"></circle>
+          <circle cx="{{ d.wheelF.cx }}" cy="{{ d.wheelF.cy }}" r="{{ d.hubR }}" fill="#C6CCC8" opacity="{{ d.rim.op }}"></circle>
+        </g>
+
+        <sc-for list="{{ d.callouts }}" as="c" hint-placeholder-count="10">
+          <g>
+            <line x1="{{ c.lx }}" y1="{{ c.ly }}" x2="{{ c.ax }}" y2="{{ c.ay }}" stroke="{{ c.color }}" stroke-width="1.4"></line>
+            <circle cx="{{ c.lx }}" cy="{{ c.ly }}" r="2.6" fill="{{ c.color }}"></circle>
+            <circle cx="{{ c.ax }}" cy="{{ c.ay }}" r="5" fill="{{ c.color }}"></circle>
+            <sc-if value="{{ c.picked }}" hint-placeholder-val="{{ false }}">
+              <circle cx="{{ c.ax }}" cy="{{ c.ay }}" r="11" fill="none" stroke="{{ c.color }}" stroke-width="1.4" opacity="0.45"></circle>
+            </sc-if>
+
+          </g>
+        </sc-for>
+      </svg>
+      </div>
+
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:4px">
+        <sc-for list="{{ compat }}" as="i" hint-placeholder-count="2">
+          <div style="flex:1 1 300px;min-width:0;display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:18px;background:rgba(242,237,227,.05)">
+            <sc-if value="{{ i.isError }}" hint-placeholder-val="{{ false }}">
+              <span style="flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#D9634A;margin-top:6px"></span>
+            </sc-if>
+            <sc-if value="{{ i.isWarn }}" hint-placeholder-val="{{ true }}">
+              <span style="flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#D8A23C;margin-top:6px"></span>
+            </sc-if>
+            <sc-if value="{{ i.isOk }}" hint-placeholder-val="{{ false }}">
+              <span style="flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#6FBE7E;margin-top:6px"></span>
+            </sc-if>
+            <div style="min-width:0">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:#F2EDE3">{{ i.title }}</div>
+              <div style="font-family:'Newsreader',serif;font-size:15px;line-height:1.45;color:#A9B3A9;margin-top:3px">{{ i.detail }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:44px 32px 0">
+    <div style="max-width:1320px;margin:0 auto;display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start">
+
+      <div style="flex:1 1 560px;min-width:0">
+        <div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:24px">
+          <h2 style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(26px,3vw,36px);letter-spacing:-.02em;text-transform:uppercase;margin:0">Cheapest first</h2>
+          <span style="font-family:'DM Mono',monospace;font-size:12px;color:#4E5A52">{{ count }} genuine product pages · sorted on the landed cost to {{ countryLabel }}</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <sc-for list="{{ visible }}" as="r" hint-placeholder-count="5">
+            <div style="display:flex;flex-wrap:wrap;gap:26px;padding:22px;background:#FBF8F2;border-radius:24px;box-shadow:0 18px 40px -30px rgba(22,33,28,.45);align-items:flex-start">
+              <div style="position:relative;flex:0 0 auto;width:196px;height:150px;background:#EFE8DB;border-radius:18px;overflow:hidden">
+                <image-slot id="{{ r.slotId }}" shape="rect" fit="contain" placeholder="product photo"></image-slot>
+                <div style="position:absolute;top:10px;left:10px;font-family:'DM Mono',monospace;font-size:11px;padding:4px 10px;border-radius:999px;background:rgba(22,33,28,.8);color:#F2EDE3;pointer-events:none">{{ r.rank }}</div>
+              </div>
+
+              <div style="flex:1 1 260px;min-width:0;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+                  <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#B94A26">{{ r.component }}</span>
+                  <span style="font-family:'DM Mono',monospace;font-size:11px;color:#4E5A52">{{ r.retailer }}</span>
+                </div>
+                <div style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:27px;line-height:1;letter-spacing:-.01em;text-transform:uppercase">{{ r.brand }}</div>
+                <div style="font-family:'Newsreader',serif;font-size:18px;line-height:1.35;color:#2C3830">{{ r.name }}</div>
+                <div style="display:flex;gap:16px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:12px;color:#4E5A52">
+                  <sc-if value="{{ r.hasWheel }}" hint-placeholder-val="{{ true }}">
+                    <span style="white-space:nowrap">{{ r.wheel }}in wheel</span>
+                  </sc-if>
+                  <sc-if value="{{ r.hasTravel }}" hint-placeholder-val="{{ true }}">
+                    <span style="white-space:nowrap">{{ r.travel }}mm travel</span>
+                  </sc-if>
+                  <span style="white-space:nowrap">{{ r.styleTag }}</span>
+                </div>
+                <sc-if value="{{ r.isIn }}" hint-placeholder-val="{{ true }}">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:6px 13px;border-radius:999px;background:rgba(62,107,68,.15);color:#2C5333">In stock</span>
+                    <span style="font-family:'Newsreader',serif;font-style:italic;font-size:15px;color:#4E5A52">evidence: “{{ r.evidence }}”</span>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ r.isUnknown }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:6px 13px;border-radius:999px;background:rgba(154,106,18,.17);color:#6F4C0D">Stock unknown</span>
+                    <span style="font-family:'Newsreader',serif;font-style:italic;font-size:15px;color:#4E5A52">no decisive phrase on the page</span>
+                  </div>
+                </sc-if>
+                <div style="font-family:'DM Mono',monospace;font-size:12px;color:#4E5A52">{{ r.shipLine }}</div>
+              </div>
+
+              <div style="flex:1 1 190px;display:flex;flex-direction:column;align-items:flex-start;gap:12px">
+                <div>
+                  <div style="font-family:'DM Mono',monospace;font-weight:500;font-size:30px;letter-spacing:-.02em">{{ r.priceLabel }}</div>
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#B94A26;margin-top:3px">delivered to {{ countryLabel }}</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:11.5px;line-height:1.45;color:#4E5A52;margin-top:6px">{{ r.costLine }}</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:11.5px;color:#8A8578;margin-top:3px">{{ r.listedLine }}</div>
+                </div>
+                <a href="{{ r.url }}" target="_blank" style="display:block;text-align:center;width:100%;max-width:220px;font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:17px;letter-spacing:.02em;text-transform:uppercase;padding:15px 0;border-radius:999px;background:#B94A26;color:#F2EDE3" style-hover="background:#16211C">Buy cheapest →</a>
+                <button onClick="{{ r.add }}" style="width:100%;max-width:220px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:14px 0;border-radius:999px;cursor:pointer;background:#EFE8DB;border:0;color:#16211C" style-hover="background:#16211C;color:#F2EDE3">Add to build</button>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ hasHidden }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:20px 0 0;padding:14px 18px;border-radius:18px;background:#EBE4D8;font-family:'DM Mono',monospace;font-size:12.5px;color:#6B5A50">{{ hiddenLine }}</div>
+        </sc-if>
+
+        <div style="margin:22px 0 0;font-family:'Newsreader',serif;font-size:16px;line-height:1.55;color:#4E5A52;max-width:70ch">
+          Every price here is the <span style="color:#16211C">landed cost for {{ countryLabel }}</span> — the listing with its origin VAT stripped, plus that retailer’s shipping to your door, plus the duty, {{ countryLabel }} tax rate and clearance fee you’ll actually be billed. A German listing is not a Swedish price. Confirm at checkout before you order.
+        </div>
+      </div>
+
+      <div style="flex:1 1 320px;min-width:280px;position:sticky;top:92px;background:#16211C;color:#F2EDE3;border-radius:28px;overflow:hidden;box-shadow:0 28px 60px -36px rgba(22,33,28,.65)">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;padding:22px 24px 14px">
+          <span style="font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:22px;text-transform:uppercase">Kit list</span>
+          <span style="font-family:'DM Mono',monospace;font-size:11px;color:#9EAA9E">{{ pickCount }}/10 parts</span>
+        </div>
+        <div>
+          <sc-for list="{{ picks }}" as="p" hint-placeholder-count="3">
+            <div style="display:flex;gap:12px;align-items:center;padding:11px 24px">
+              <div style="flex:0 0 auto;width:54px;height:46px;background:#203028;border-radius:14px;overflow:hidden">
+                <image-slot id="{{ p.slotId }}" shape="rect" fit="contain" placeholder=" "></image-slot>
+              </div>
+              <div style="flex:1 1 auto;min-width:0">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#8E9A8E">{{ p.component }}</div>
+                <div style="font-family:'Newsreader',serif;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.brand }} {{ p.name }}</div>
+              </div>
+              <span style="font-family:'DM Mono',monospace;font-size:13px;color:#DCD6C9">{{ p.money }}</span>
+              <button onClick="{{ p.remove }}" style="flex:0 0 auto;font-family:'DM Mono',monospace;font-size:14px;width:28px;height:28px;border-radius:999px;cursor:pointer;background:rgba(242,237,227,.1);border:0;color:#AAB4AA" style-hover="background:#C86A50;color:#16211C">×</button>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:28px 20px;font-family:'Newsreader',serif;font-style:italic;font-size:16px;line-height:1.5;color:#8E9A8E;text-align:center">Nothing picked yet.<br />Add parts as you browse.</div>
+        </sc-if>
+        <div style="padding:16px 24px 24px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:16px">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:#9EAA9E">Landed in {{ countryLabel }}</span>
+            <span style="font-family:'DM Mono',monospace;font-weight:500;font-size:28px;color:#F2EDE3">{{ total }}</span>
+          </div>
+          <button style="width:100%;font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:17px;text-transform:uppercase;padding:15px 0;border:0;border-radius:999px;background:#F2EDE3;color:#16211C;cursor:pointer" style-hover="background:#B94A26;color:#F2EDE3">Open all buy links</button>
+          <div style="margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;color:#6E7A70;text-align:center">saved to data/builds.json</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-top:72px;background:#EBE4D8">
+    <div style="max-width:1320px;margin:0 auto;padding:36px 32px;display:flex;gap:26px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#4E5A52">Retailer ring · live scrape</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ stores }}" as="s" hint-placeholder-count="8">
+          <span style="font-family:'DM Mono',monospace;font-size:12px;padding:8px 15px;border-radius:999px;background:#F6F1E7;color:#5A665C">{{ s }}</span>
+        </sc-for>
+      </div>
+    </div>
+    <div style="max-width:1320px;margin:0 auto;padding:0 32px 40px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:#8A8578">Shipdeal · no used · no dead links · no generic search junk</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;inStockOnly&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;sortBy&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;price&quot;,&quot;brand&quot;],&quot;default&quot;:&quot;price&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+const CATALOGUE = [
+  { component: "fork", brand: "RockShox", name: "ZEB Select+ 170 29", price: 429, currency: "EUR", gbp: 368.94, stock: "in", evidence: "add to cart", wheel: "29", travel: 170, styleTag: "enduro", retailer: "probikesupply", ships: "likely (ships internationally)", url: "#" },
+  { component: "fork", brand: "Marzocchi", name: "Bomber Z1 170 29", price: 512, currency: "EUR", gbp: 440.32, stock: "in", evidence: "in stock", wheel: "29", travel: 170, styleTag: "enduro", retailer: "chainreactioncycles", ships: "yes", url: "#" },
+  { component: "fork", brand: "Manitou", name: "Mezzer Pro 180 29", price: 545.99, currency: "USD", gbp: 431.33, stock: "unknown", evidence: "", wheel: "29", travel: 180, styleTag: "freeride", retailer: "amazon", ships: "many ship to UK", url: "#" },
+  { component: "wheelset", brand: "Hunt", name: "Enduro Wide V2 29", price: 519, currency: "GBP", gbp: 519, stock: "in", evidence: "add to cart", wheel: "29", travel: 0, styleTag: "enduro", retailer: "huntbikewheels", ships: "yes", url: "#" },
+  { component: "wheelset", brand: "Winspace", name: "Carbon Trail 29 Boost", price: 468, currency: "USD", gbp: 369.72, stock: "in", evidence: "in stock", wheel: "29", travel: 0, styleTag: "enduro", retailer: "winspace", ships: "yes (factory-direct)", url: "#" },
+  { component: "frame", brand: "ICAN", name: "P9 Carbon Enduro 170", price: 1189, currency: "USD", gbp: 939.31, stock: "unknown", evidence: "", wheel: "29", travel: 170, styleTag: "enduro", retailer: "icancycling", ships: "likely", url: "#" },
+  { component: "tires", brand: "Maxxis", name: "Assegai 29×2.5 MaxxGrip", price: 62.5, currency: "EUR", gbp: 53.75, stock: "in", evidence: "in stock", wheel: "29", travel: 0, styleTag: "enduro", retailer: "chainreactioncycles", ships: "yes", url: "#" },
+  { component: "brakes", brand: "TRP", name: "DH-R EVO 4-Piston Set", price: 289, currency: "EUR", gbp: 248.54, stock: "in", evidence: "add to cart", wheel: "29", travel: 0, styleTag: "downhill", retailer: "probikesupply", ships: "likely (ships internationally)", url: "#" },
+  { component: "drivetrain", brand: "Box", name: "Prime 9 Wide Groupset", price: 268, currency: "USD", gbp: 211.72, stock: "in", evidence: "in stock", wheel: "29", travel: 0, styleTag: "enduro", retailer: "boxcomponents", ships: "likely", url: "#" },
+  { component: "pedals", brand: "OneUp", name: "Aluminium Flat Pedals", price: 41.99, currency: "GBP", gbp: 41.99, stock: "in", evidence: "add to cart", wheel: "29", travel: 0, styleTag: "enduro", retailer: "chainreactioncycles", ships: "yes", url: "#" }
+];
+
+// mirrors catalogue.py COMPONENTS: wheel/travel flagged only where the spec must match the style
+const SPEC_FLAGS = {
+  frame: { wheel: true, travel: true },
+  fork: { wheel: true, travel: true },
+  rear_shock: { travel: false },
+  wheelset: { wheel: true },
+  tires: { wheel: true },
+  drivetrain: {}, brakes: {}, cockpit: {}, pedals: {}, saddle_post: {}
+};
+
+const COMPONENT_LABELS = ["frame","fork","rear shock","wheelset","tires","drivetrain","brakes","cockpit","pedals","saddle"];
+const PRESETS = {
+  xc: { fork: 120, rear: 120, wheel: "29", band: "£300 – £1,400 frame" },
+  enduro: { fork: 170, rear: 170, wheel: "29", band: "£300 – £1,400 frame" },
+  freeride: { fork: 180, rear: 180, wheel: "27.5", band: "£300 – £1,400 frame" },
+  downhill: { fork: 200, rear: 200, wheel: "29", band: "£300 – £1,400 frame" },
+  ebike: { fork: 170, rear: 170, wheel: "29", band: "£300 – £1,400 frame" }
+};
+// destination countries — VAT, import duty and de-minimis differ per country, not per region
+const COUNTRIES = {
+  GB: { name: "United Kingdom", group: "Europe", cur: "GBP", sym: "£", rate: 1,     vat: .20,  duty: .041, customs: "UK", zone: "UK",  clearance: 12, dutyFree: 135, taxFree: 0 },
+  IE: { name: "Ireland",        group: "Europe", cur: "EUR", sym: "€", rate: 1.16,  vat: .23,  duty: .047, customs: "EU", zone: "EU",  clearance: 15, dutyFree: 129, taxFree: 0 },
+  DE: { name: "Germany",        group: "Europe", cur: "EUR", sym: "€", rate: 1.16,  vat: .19,  duty: .047, customs: "EU", zone: "EU",  clearance: 15, dutyFree: 129, taxFree: 0 },
+  FR: { name: "France",         group: "Europe", cur: "EUR", sym: "€", rate: 1.16,  vat: .20,  duty: .047, customs: "EU", zone: "EU",  clearance: 15, dutyFree: 129, taxFree: 0 },
+  NL: { name: "Netherlands",    group: "Europe", cur: "EUR", sym: "€", rate: 1.16,  vat: .21,  duty: .047, customs: "EU", zone: "EU",  clearance: 15, dutyFree: 129, taxFree: 0 },
+  AT: { name: "Austria",        group: "Europe", cur: "EUR", sym: "€", rate: 1.16,  vat: .20,  duty: .047, customs: "EU", zone: "EU",  clearance: 15, dutyFree: 129, taxFree: 0 },
+  ES: { name: "Spain",          group: "Europe", cur: "EUR", sym: "€", rate: 1.16,  vat: .21,  duty: .047, customs: "EU", zone: "EU",  clearance: 15, dutyFree: 129, taxFree: 0 },
+  IT: { name: "Italy",          group: "Europe", cur: "EUR", sym: "€", rate: 1.16,  vat: .22,  duty: .047, customs: "EU", zone: "EU",  clearance: 15, dutyFree: 129, taxFree: 0 },
+  PL: { name: "Poland",         group: "Europe", cur: "PLN", sym: " zł", after: true, dec: 0, rate: 5.05, vat: .23, duty: .047, customs: "EU", zone: "EU", clearance: 13, dutyFree: 129, taxFree: 0 },
+  SE: { name: "Sweden",         group: "Europe", cur: "SEK", sym: " kr", after: true, dec: 0, rate: 13.4, vat: .25, duty: .047, customs: "EU", zone: "EU", clearance: 14, dutyFree: 129, taxFree: 0 },
+  DK: { name: "Denmark",        group: "Europe", cur: "DKK", sym: " kr", after: true, dec: 0, rate: 8.65, vat: .25, duty: .047, customs: "EU", zone: "EU", clearance: 14, dutyFree: 129, taxFree: 0 },
+  CH: { name: "Switzerland",    group: "Europe", cur: "CHF", sym: "CHF ", rate: 1.12, vat: .081, duty: .02, customs: "CH", zone: "EUX", clearance: 16, dutyFree: 0, taxFree: 0 },
+  NO: { name: "Norway",         group: "Europe", cur: "NOK", sym: " kr", after: true, dec: 0, rate: 13.6, vat: .25, duty: .025, customs: "NO", zone: "EUX", clearance: 14, dutyFree: 0, taxFree: 0 },
+  US: { name: "United States",  group: "North America", cur: "USD", sym: "$", rate: 1.27, vat: .072, duty: .0, customs: "US", zone: "NA", clearance: 0, dutyFree: 630, taxFree: 630 },
+  CA: { name: "Canada",         group: "North America", cur: "CAD", sym: "C$", rate: 1.73, vat: .13, duty: .05, customs: "CA", zone: "NA", clearance: 10, dutyFree: 16, taxFree: 16 },
+  AU: { name: "Australia",      group: "Oceania", cur: "AUD", sym: "A$", rate: 1.93, vat: .10, duty: .05, customs: "AU", zone: "OC", clearance: 0, dutyFree: 518, taxFree: 0 },
+  NZ: { name: "New Zealand",    group: "Oceania", cur: "NZD", sym: "NZ$", rate: 2.10, vat: .15, duty: .05, customs: "NZ", zone: "OC", clearance: 0, dutyFree: 0, taxFree: 0 }
+};
+
+// where each retailer ships from, what it charges by zone (GBP) and how long it takes
+const RETAILERS = {
+  probikesupply:       { origin: "NL", customs: "EU", vat: .21, ship: { UK: 14, EU: 9, EUX: 19, NA: 26, OC: 34 }, free: { EU: 180 }, days: { UK: 4, EU: 3, EUX: 5, NA: 8, OC: 12 } },
+  chainreactioncycles: { origin: "IE", customs: "EU", vat: .23, ship: { UK: 6, EU: 8, EUX: 18, NA: 22, OC: 28 }, free: { UK: 100, EU: 150 }, days: { UK: 3, EU: 4, EUX: 6, NA: 8, OC: 11 } },
+  huntbikewheels:      { origin: "GB", customs: "UK", vat: .20, ship: { UK: 0, EU: 19, EUX: 24, NA: 29, OC: 39 }, days: { UK: 2, EU: 5, EUX: 7, NA: 8, OC: 12 } },
+  boxcomponents:       { origin: "US", customs: "US", vat: 0,   ship: { NA: 9, UK: 28, EU: 30, EUX: 34, OC: 38 }, days: { NA: 4, UK: 9, EU: 9, EUX: 11, OC: 12 } },
+  winspace:            { origin: "CN", customs: "CN", vat: 0,   ship: { UK: 0, EU: 0, EUX: 0, NA: 0, OC: 0 }, days: { UK: 9, EU: 9, EUX: 11, NA: 8, OC: 10 } },
+  icancycling:         { origin: "CN", customs: "CN", vat: 0,   ship: { UK: 0, EU: 0, EUX: 0, NA: 0, OC: 0 }, days: { UK: 11, EU: 11, EUX: 13, NA: 10, OC: 12 } },
+  amazon:              { origin: "US", customs: "US", vat: 0,   ship: { NA: 0, UK: 16, EU: 18, EUX: 22, OC: 26 }, days: { NA: 3, UK: 8, EU: 8, EUX: 10, OC: 12 } }
+};
+
+function money(cc, gbp) {
+  const C = COUNTRIES[cc], v = gbp * C.rate, dec = C.dec === undefined ? 2 : C.dec;
+  const n = v.toLocaleString("en-GB", { minimumFractionDigits: dec, maximumFractionDigits: dec });
+  return C.after ? n + C.sym : C.sym + n;
+}
+
+// what the part actually costs delivered to ONE country
+function landed(row, cc) {
+  const R = RETAILERS[row.retailer] || { origin: "??", customs: "??", vat: 0, ship: {}, days: {} };
+  const C = COUNTRIES[cc], z = C.zone;
+  const serves = R.ship[z] !== undefined;
+  let ship = serves ? R.ship[z] : 0;
+  const freeAt = (R.free || {})[z];
+  if (freeAt && row.gbp >= freeAt) ship = 0;
+
+  const domestic = R.customs === C.customs && R.customs !== "EU";
+  const net = domestic ? row.gbp : (R.vat ? row.gbp / (1 + R.vat) : row.gbp);
+  const crossing = R.customs !== C.customs;
+  const dutiable = crossing && net + ship > C.dutyFree;
+  const taxable = domestic ? false : (crossing ? net + ship > C.taxFree : true);
+  const duty = dutiable ? net * C.duty : 0;
+  const vat = taxable ? (net + ship + duty) * C.vat : 0;
+  const clear = dutiable ? C.clearance : 0;
+  const total = net + ship + duty + vat + clear;
+
+  const parts = [];
+  parts.push((domestic ? "item " : "net ") + money(cc, net));
+  parts.push(ship === 0 ? "free shipping" : "ship " + money(cc, ship));
+  if (duty) parts.push(Math.round(C.duty * 1000) / 10 + "% duty " + money(cc, duty));
+  if (vat) parts.push(Math.round(C.vat * 1000) / 10 + "% " + (cc === "US" ? "sales tax " : "VAT ") + money(cc, vat));
+  if (clear) parts.push("clearance " + money(cc, clear));
+
+  return {
+    serves, total, gbp: total, ship, duty, vat, crossing, dutiable,
+    label: money(cc, total),
+    line: parts.join(" + "),
+    days: R.days[z],
+    origin: R.origin,
+    dutyLine: !crossing ? "no border to cross"
+      : dutiable ? "import duty + " + Math.round(C.vat * 100) + "% VAT applied"
+      : C.dutyFree ? "under the " + money(cc, C.dutyFree) + " duty threshold"
+      : "no duty on this line"
+  };
+}
+
+// side-view silhouette geometry per riding style (mirrors catalogue.py STYLE_DEFAULTS)
+// real-world millimetres — converted to px by one scale below
+const GEO = {
+  xc:       { tire: 370, ha: 68, travel: 120, wb: 1160, seatTube: 460, post: 340, dual: false, motor: false },
+  enduro:   { tire: 370, ha: 64, travel: 170, wb: 1250, seatTube: 430, post: 330, dual: false, motor: false },
+  freeride: { tire: 344, ha: 63, travel: 180, wb: 1230, seatTube: 390, post: 220, dual: false, motor: false },
+  downhill: { tire: 370, ha: 62, travel: 200, wb: 1300, seatTube: 340, post: 60,  dual: true,  motor: false },
+  ebike:    { tire: 370, ha: 64, travel: 170, wb: 1265, seatTube: 430, post: 330, dual: false, motor: true }
+};
+
+const SLOTS = [
+  { key: "saddle_post", n: "10", label: "Saddle & post", tx: 34,  ty: 54,  side: "start" },
+  { key: "frame",       n: "01", label: "Frame",         tx: 34,  ty: 126, side: "start" },
+  { key: "rear_shock",  n: "03", label: "Rear shock",    tx: 34,  ty: 198, side: "start" },
+  { key: "drivetrain",  n: "06", label: "Drivetrain",    tx: 34,  ty: 470, side: "start" },
+  { key: "pedals",      n: "09", label: "Pedals",        tx: 34,  ty: 545, side: "start" },
+  { key: "cockpit",     n: "08", label: "Cockpit",       tx: 966, ty: 54,  side: "end" },
+  { key: "fork",        n: "02", label: "Fork",          tx: 966, ty: 126, side: "end" },
+  { key: "tires",       n: "05", label: "Tires",         tx: 966, ty: 198, side: "end" },
+  { key: "wheelset",    n: "04", label: "Wheelset",      tx: 966, ty: 470, side: "end" },
+  { key: "brakes",      n: "07", label: "Brakes",        tx: 966, ty: 545, side: "end" }
+];
+
+function bikeGeo(style, picks) {
+  const g = GEO[style] || GEO.enduro;
+  const r = v => Math.round(v * 10) / 10;
+  const S = 0.2865, groundY = 470;                     // px per mm
+  const tPx = g.tire * S, wbPx = g.wb * S;
+  const ox = tPx + (1000 - wbPx - 2 * tPx) / 2;        // centre the bike in the viewBox
+  const X = mm => ox + mm * S, Y = mm => groundY - mm * S;
+  const P = m => [r(X(m[0])), r(Y(m[1]))];
+  const tireR = r(tPx), axleY = r(Y(g.tire));
+  const rearX = r(X(0)), frontX = r(X(g.wb));
+  const bbMM = [434, 345];                             // chainstay 435, BB height 345
+  const bbX = r(X(bbMM[0])), bbY = r(Y(bbMM[1]));
+  const rad = g.ha * Math.PI / 180, ux = -Math.cos(rad), uy = Math.sin(rad);
+  const forkLen = g.travel + 380;                      // axle-to-crown
+  const fAt = t => [g.wb + ux * forkLen * t, g.tire + uy * forkLen * t];
+  const crown = fAt(1);
+  const htBotMM = [crown[0] + ux * 12, crown[1] + uy * 12];
+  const htTopMM = [crown[0] + ux * 140, crown[1] + uy * 140];
+  const barBase = [htTopMM[0] + ux * 70, htTopMM[1] + uy * 70];
+  const barMM = [barBase[0] + 60, barBase[1] + 6];
+  const sx = -Math.cos(76 * Math.PI / 180), sy = Math.sin(76 * Math.PI / 180);
+  const seatTopMM = [bbMM[0] + sx * g.seatTube, bbMM[1] + sy * g.seatTube];
+  const saddleMM = [seatTopMM[0] + sx * g.post, seatTopMM[1] + sy * g.post];
+  const ssTopMM = [bbMM[0] + sx * g.seatTube * 0.72, bbMM[1] + sy * g.seatTube * 0.72];
+  const shTopMM = [bbMM[0] + sx * g.seatTube * 0.45, bbMM[1] + sy * g.seatTube * 0.45];
+  const shBotMM = [bbMM[0] * 0.5, g.tire * 0.6];
+  const pedMM = [bbMM[0] + 150, bbMM[1] - 95];
+  const [crX, crY] = P(crown), [hbX, hbY] = P(htBotMM), [htX, htY] = P(htTopMM);
+  const [stX, stY] = P(seatTopMM), [postX, postY] = P(saddleMM), [ssX, ssY] = P(ssTopMM);
+  const shA = P(shTopMM), shB = P(shBotMM);
+  const [stemX, stemY] = P(barMM);
+  const [pedX, pedY] = P(pedMM);
+
+  const anchors = {
+    frame: [(stX + htX) / 2, (stY + htY) / 2],
+    fork: P(fAt(0.5)),
+    rear_shock: [(shA[0] + shB[0]) / 2, (shA[1] + shB[1]) / 2],
+    wheelset: [frontX, axleY],
+    tires: [frontX + tireR * 0.72, axleY - tireR * 0.72],
+    drivetrain: [rearX + 14, axleY - 16],
+    brakes: [frontX - 30, axleY + 26],
+    cockpit: [stemX + 22, stemY - 6],
+    pedals: [pedX + 4, pedY + 6],
+    saddle_post: [postX + 10, postY - 6]
+  };
+
+  return {
+    rearX: r(rearX), frontX: r(frontX), axleY: r(axleY), tireR: tireR, rimR: tireR - 18,
+    hubR: 9, rotorR: Math.round(tireR * 0.42), ringR: 25, cogR: 19,
+    bbX: r(bbX), bbY: r(bbY),
+    motor: g.motor, dual: g.dual,
+    motorX: r(bbX - 34), motorY: r(bbY - 30),
+    frame: `M${r(stX)},${r(stY)} L${r(htX)},${r(htY + 10)} M${r(bbX)},${r(bbY)} L${r(hbX)},${r(hbY)} M${r(bbX)},${r(bbY)} L${r(stX)},${r(stY)} M${r(bbX)},${r(bbY)} L${r(rearX)},${r(axleY)} M${r(rearX)},${r(axleY)} L${r(ssX)},${r(ssY)} M${r(hbX)},${r(hbY)} L${r(htX)},${r(htY)}`,
+    fork: `M${r(frontX)},${r(axleY)} L${r(crX)},${r(crY)} M${r(crX)},${r(crY)} L${r(htX)},${r(htY)}`,
+    crown: `M${r(crX - 16)},${r(crY + 8)} L${r(crX + 16)},${r(crY - 8)}`,
+    crown2: `M${r((crX + htX) / 2 - 16)},${r((crY + htY) / 2 + 8)} L${r((crX + htX) / 2 + 16)},${r((crY + htY) / 2 - 8)}`,
+    shock: `M${r(shA[0])},${r(shA[1])} L${r(shB[0])},${r(shB[1])}`,
+    bars: `M${r(htX)},${r(htY)} L${r(stemX)},${r(stemY)} M${r(stemX - 16)},${r(stemY + 12)} L${r(stemX + 28)},${r(stemY - 6)}`,
+    saddle: `M${r(stX)},${r(stY)} L${r(postX)},${r(postY)} M${r(postX - 30)},${r(postY)} L${r(postX + 36)},${r(postY - 4)}`,
+    crank: `M${r(bbX)},${r(bbY)} L${r(pedX)},${r(pedY)} M${r(pedX - 10)},${r(pedY + 8)} L${r(pedX + 12)},${r(pedY - 4)}`,
+    chain: `M${r(bbX + 25)},${r(bbY + 20)} L${r(rearX + 16)},${r(axleY + 15)} M${r(rearX + 16)},${r(axleY - 15)} L${r(bbX + 24)},${r(bbY - 20)}`,
+    readout: `head angle ${g.ha}° · fork ${g.travel}mm · ${tireR > 102 ? "29" : "27.5"}in wheels · ${g.dual ? "dual-crown" : "single-crown"}`,
+    callouts: SLOTS.map(s => {
+      const p = picks[s.key] || picks[s.key.replace("_post", "")];
+      const a = anchors[s.key];
+      return {
+        n: s.n, label: s.label, tx: s.tx, ty: s.ty, side: s.side,
+        top: r((s.ty - 20) / 630 * 100) + "%",
+        left: s.side === "start" ? "2.4%" : "auto",
+        right: s.side === "start" ? "auto" : "2.4%",
+        align: s.side === "start" ? "left" : "right",
+        lx: s.side === "start" ? 228 : 772, ly: s.ty - 2,
+        ax: r(a[0]), ay: r(a[1]),
+        value: p ? p.brand + " · " + (fmt ? fmt(p) : "£" + p.gbp.toFixed(2)) : "not picked",
+        picked: !!p, notPicked: !p,
+        color: p ? "#E0763F" : "#5F6C62",
+        textColor: p ? "#F2EDE3" : "#93A093",
+        valueColor: p ? "#E0763F" : "#77836F"
+      };
+    })
+  };
+}
+
+// how a picked brand changes the drawing
+const LOOK = {
+  fork: { RockShox: { st: "#C9A24C", lo: "#1E2326" }, Fox: { st: "#D8A62F", lo: "#191C1F" },
+          Marzocchi: { st: "#C9CED3", lo: "#A5342A" }, Manitou: { st: "#CDC6E4", lo: "#3E3266" },
+          _: { st: "#C9A24C", lo: "#1E2326" } },
+  frame: { ICAN: "#2A3032", Trifox: "#2F3A45", Dengfu: "#3A4045", _: "#E7E1D4" },
+  wheelset: { Hunt: "#39403F", Winspace: "#1B1F21", Yoeleo: "#1D2123", Novatec: "#454B4C", _: "#39403F" },
+  tires: { Maxxis: { knob: 48, cw: 20 }, Kenda: { knob: 38, cw: 17 }, Continental: { knob: 42, cw: 18 }, _: { knob: 42, cw: 18 } },
+  brakes: { TRP: 203, Trickstuff: 203, Formula: 180, Magura: 180, _: 203 },
+  drivetrain: { Box: 9, Ltwoo: 11, ZTTO: 11, Shimano: 12, _: 11 },
+  pedals: { OneUp: 108, VP: 96, Wellgo: 92, _: 100 }
+};
+
+// compatibility gate — mirrors filters.py (style / wheel / travel) + the README honesty gate
+function checkCompat(style, picks, country) {
+  const preset = PRESETS[style] || PRESETS.enduro;
+  const SPEC = { frame: 1, fork: 1, wheelset: 1, tires: 1 };
+  const issues = [], flagged = {};
+  const flag = (level, title, detail, keys) => { issues.push({ level, title, detail, keys: keys.join(", "), isError: level === "error", isWarn: level === "warn", isOk: level === "ok" }); if (level !== "ok") keys.forEach(k => { flagged[k] = true; }); };
+
+  const wheels = {};
+  Object.keys(picks).forEach(k => { if (SPEC[k] && picks[k].wheel) (wheels[picks[k].wheel] = wheels[picks[k].wheel] || []).push(k); });
+  const sizes = Object.keys(wheels);
+  if (sizes.length > 1) {
+    flag("error", "Wheel size clash", `${sizes.map(s => s + "in").join(" vs ")} across ${sizes.map(s => wheels[s].join(" + ")).join(" and ")}. Pick one diameter.`, [].concat(...sizes.map(s => wheels[s])));
+  } else if (sizes.length === 1 && sizes[0] !== preset.wheel) {
+    flag("warn", "Off-preset wheel size", `${sizes[0]}in on the ${style} preset, which expects ${preset.wheel}in.`, wheels[sizes[0]]);
+  }
+
+  const fork = picks.fork;
+  if (fork && fork.travel && Math.abs(fork.travel - preset.fork) > 20) {
+    flag(fork.travel > preset.fork + 40 ? "error" : "warn", "Fork travel vs frame",
+      `${fork.travel}mm fork against a ${preset.fork}mm ${style} preset — geometry and warranty risk.`, ["fork"]);
+  }
+  if (fork && picks.frame && picks.frame.travel && Math.abs(fork.travel - picks.frame.travel) > 20) {
+    flag("warn", "Front/rear travel mismatch", `${fork.travel}mm front against ${picks.frame.travel}mm rear.`, ["fork", "frame"]);
+  }
+
+  const unknown = Object.keys(picks).filter(k => picks[k].stock !== "in");
+  if (unknown.length) flag("warn", "Stock not confirmed", `${unknown.map(k => picks[k].brand).join(", ")} — no decisive in-stock phrase on the page.`, unknown);
+
+  const C = COUNTRIES[country] || COUNTRIES.GB;
+  const noShip = Object.keys(picks).filter(k => !landed(picks[k], country).serves);
+  if (noShip.length) flag("error", "Won’t deliver to " + C.name, `${noShip.map(k => picks[k].retailer).join(", ")} don’t ship to ${C.name} — swap these before checkout.`, noShip);
+
+  const dutied = Object.keys(picks).filter(k => landed(picks[k], country).dutiable);
+  if (dutied.length) flag("warn", "Import duty on " + dutied.length + (dutied.length === 1 ? " part" : " parts"),
+    `${dutied.map(k => picks[k].retailer).join(", ")} ship from outside ${C.name}’s customs area — duty, ${Math.round(C.vat * 100)}% VAT and a clearance fee are in the totals above.`, dutied);
+
+  if (!issues.length && Object.keys(picks).length) flag("ok", "No conflicts", `Every pick matches the preset spec, is confirmed in stock, and delivers to ${C.name} with all taxes in the price.`, []);
+  return { issues, flagged, count: issues.filter(i => i.level !== "ok").length };
+}
+
+function bikeArt(style, picks, flagged, fmt) {
+  const g = GEO[style] || GEO.enduro;
+  const r = v => Math.round(v * 10) / 10;
+  const S = 0.2865, groundY = 470;
+  const tPx = g.tire * S, wbPx = g.wb * S;
+  const ox = tPx + (1000 - wbPx - 2 * tPx) / 2;
+  const X = mm => ox + mm * S, Y = mm => groundY - mm * S;
+  const P = m => [r(X(m[0])), r(Y(m[1]))];
+  const pick = k => picks[k] || picks[k.replace("_post", "")];
+  const brandLook = (k, table) => table[(pick(k) || {}).brand] || table._;
+  const dress = (k, fill) => pick(k)
+    ? { fill: fill, stroke: "#0F1614", dash: "0", op: 1 }
+    : { fill: "none", stroke: "#5C6A61", dash: "6 5", op: 0.7 };
+
+  const tire = g.tire, wb = g.wb;
+  const bb = [434, 345], rearAx = [0, tire], frontAx = [wb, tire];
+  const rad = g.ha * Math.PI / 180, ux = -Math.cos(rad), uy = Math.sin(rad);
+  const forkLen = g.travel + 380;
+  const fAt = t => [wb + ux * forkLen * t, tire + uy * forkLen * t];
+  const crown = fAt(1);
+  const htBot = [crown[0] + ux * 14, crown[1] + uy * 14];
+  const htTop = [crown[0] + ux * 150, crown[1] + uy * 150];
+  const stemB = [htTop[0] + ux * 55, htTop[1] + uy * 55];
+  const barPt = [stemB[0] + 78, stemB[1] + 20];
+  const sdx = -Math.cos(76 * Math.PI / 180), sdy = Math.sin(76 * Math.PI / 180);
+  const seatTop = [bb[0] + sdx * g.seatTube, bb[1] + sdy * g.seatTube];
+  const saddleMM = [seatTop[0] + sdx * g.post, seatTop[1] + sdy * g.post];
+  const pivot = [bb[0] + 60, bb[1] + 75];
+  const ssTop = [bb[0] + sdx * g.seatTube * 0.68, bb[1] + sdy * g.seatTube * 0.68];
+  const rockB = [ssTop[0] + 78, ssTop[1] - 34];
+  const dtMid = [bb[0] + (htBot[0] - bb[0]) * 0.42, bb[1] + (htBot[1] - bb[1]) * 0.42];
+  const ped = [bb[0] + 152, bb[1] - 92];
+
+  const tube = (a, b, w1, w2) => {
+    const A = P(a), B = P(b);
+    const dx = B[0] - A[0], dy = B[1] - A[1], L = Math.hypot(dx, dy) || 1;
+    const nx = -dy / L, ny = dx / L, W1 = w1 * S, W2 = w2 * S;
+    const o = (p, w, s) => [r(p[0] + nx * w / 2 * s), r(p[1] + ny * w / 2 * s)];
+    return [o(A, W1, 1), o(B, W2, 1), o(B, W2, -1), o(A, W1, -1)].map(p => p.join(",")).join(" ");
+  };
+  const ticks = (cx, cy, r0, r1, n) => Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2;
+    return { x1: r(cx + Math.cos(a) * r0), y1: r(cy + Math.sin(a) * r0), x2: r(cx + Math.cos(a) * r1), y2: r(cy + Math.sin(a) * r1) };
+  });
+
+  const [rax, ray] = P(rearAx), [fax, fay] = P(frontAx);
+  const tireR = r(tPx);
+  const tl = brandLook("tires", LOOK.tires);
+  const casR = r(tireR - tl.cw / 2), rimR = r(tireR - tl.cw - 5);
+  const tread = [...ticks(rax, ray, tireR - 1, casR + 1, tl.knob), ...ticks(fax, fay, tireR - 1, casR + 1, tl.knob)];
+  const spokes = [...ticks(rax, ray, 11, rimR - 4, 18), ...ticks(fax, fay, 11, rimR - 4, 18)];
+
+  const forkL = brandLook("fork", LOOK.fork);
+  const rotorR = r(brandLook("brakes", LOOK.brakes) / 2 * S);
+  const cogN = brandLook("drivetrain", LOOK.drivetrain);
+  const pedW = brandLook("pedals", LOOK.pedals);
+  const [ringX, ringY] = P(bb), ringR = r(72 * S);
+  const cogs = Array.from({ length: cogN }, (_, i) => ({ cx: rax, cy: ray, r: r((30 - i * (22 / cogN)) * 1) }));
+  const p1 = [r(rax + 30), r(ray + 34)], p2 = [r(rax + 10), r(ray + 60)];
+  const sad = P(saddleMM);
+
+  return {
+    readout: `head angle ${g.ha}° · fork ${g.travel}mm · ${g.tire > 360 ? "29" : "27.5"}in wheels · ${g.dual ? "dual-crown" : "single-crown"}`,
+    wheelR: { cx: rax, cy: ray }, wheelF: { cx: fax, cy: fay },
+    casing: { r: casR, w: tl.cw, ...dress("tires", "none"), stroke: pick("tires") ? "#2C3335" : "#5C6A61", tread: pick("tires") ? "#454F51" : "#5C6A61" },
+    tread: tread, spokes: spokes,
+    rim: { r: rimR, w: 7, ...dress("wheelset", "none"), color: brandLook("wheelset", LOOK.wheelset) },
+    hubR: 11,
+    frame: {
+      ...dress("frame", LOOK.frame[(pick("frame") || {}).brand] || LOOK.frame._),
+      tubes: [
+        { points: tube(seatTop, htTop, 46, 40) },
+        { points: tube(bb, htBot, 62, 52) },
+        { points: tube(bb, seatTop, 50, 44) },
+        { points: tube(htBot, htTop, 62, 62) },
+        { points: tube(pivot, rearAx, 48, 26) },
+        { points: tube(rearAx, rockB, 34, 26) },
+        { points: tube(rockB, ssTop, 40, 40) }
+      ]
+    },
+    fork: {
+      ...dress("fork", forkL.lo),
+      stanch: { points: tube(fAt(0.62), crown, 36, 36), color: pick("fork") ? forkL.st : "none" },
+      lower: [{ points: tube(frontAx, fAt(0.66), 44, 54) }],
+      crowns: g.dual
+        ? [{ points: tube([crown[0] - 55, crown[1]], [crown[0] + 55, crown[1]], 34, 34) },
+           { points: tube([htTop[0] - 55, htTop[1]], [htTop[0] + 55, htTop[1]], 30, 30) }]
+        : [{ points: tube([crown[0] - 58, crown[1] - 6], [crown[0] + 46, crown[1] + 8], 40, 34) }]
+    },
+    shock: {
+      ...dress("rear_shock", "#B9C2B8"),
+      body: { points: tube(dtMid, rockB, 60, 34) },
+      can: { cx: P(dtMid)[0], cy: P(dtMid)[1], r: r(46 * S) }
+    },
+    bars: {
+      ...dress("cockpit", "#22292A"),
+      parts: [{ points: tube(htTop, stemB, 44, 40) }, { points: tube(stemB, barPt, 34, 30) }],
+      grip: { points: tube([barPt[0] + 4, barPt[1] + 2], [barPt[0] + 46, barPt[1] + 10], 40, 40) }
+    },
+    saddleP: {
+      ...dress("saddle_post", "#22292A"),
+      post: { points: tube(seatTop, [saddleMM[0] + 6, saddleMM[1] - 18], 36, 34) },
+      path: `M${r(sad[0] - 40)},${r(sad[1])} C${r(sad[0] - 30)},${r(sad[1] - 9)} ${r(sad[0] + 16)},${r(sad[1] - 10)} ${r(sad[0] + 40)},${r(sad[1] - 3)} L${r(sad[0] + 36)},${r(sad[1] + 5)} C${r(sad[0] + 8)},${r(sad[1] + 10)} ${r(sad[0] - 26)},${r(sad[1] + 9)} ${r(sad[0] - 40)},${r(sad[1] + 4)} Z`
+    },
+    drive: {
+      ...dress("drivetrain", "#8E9A94"),
+      ring: { cx: ringX, cy: ringY, r: ringR },
+      teeth: ticks(ringX, ringY, ringR, ringR + 3.5, 32),
+      cogs: cogs,
+      pulleys: [{ cx: p1[0], cy: p1[1], r: 7 }, { cx: p2[0], cy: p2[1], r: 7 }],
+      cage: { points: `${p1[0] - 6},${p1[1]} ${p2[0] - 6},${p2[1]} ${p2[0] + 6},${p2[1]} ${p1[0] + 6},${p1[1]}` },
+      chain: [
+        { d: `M${r(ringX)},${r(ringY - ringR)} L${r(rax + 4)},${r(ray - 26)}` },
+        { d: `M${r(ringX)},${r(ringY + ringR)} L${p1[0]},${p1[1]} L${p2[0]},${p2[1]} L${r(rax + 6)},${r(ray + 16)}` }
+      ]
+    },
+    brake: {
+      ...dress("brakes", "#C6CCC8"),
+      rotor: { cx: fax, cy: fay, r: rotorR },
+      slots: ticks(fax, fay, rotorR - 3, rotorR - 11, 16),
+      caliper: { points: `${r(fax - 30)},${r(fay - 16)} ${r(fax - 12)},${r(fay - 22)} ${r(fax - 8)},${r(fay + 8)} ${r(fax - 26)},${r(fay + 14)}` }
+    },
+    pedals: {
+      ...dress("pedals", "#2A3132"),
+      crank: { points: tube(bb, ped, 36, 30) },
+      plate: { points: tube([ped[0] - pedW / 2, ped[1] - 26], [ped[0] + pedW / 2, ped[1] - 18], 40, 40) }
+    },
+    motor: g.motor
+      ? { show: true, points: tube([bb[0] - 40, bb[1] + 30], [bb[0] + 60, bb[1] + 10], 190, 150) }
+      : { show: false, points: "" },
+    callouts: SLOTS.map(s => {
+      const p = pick(s.key);
+      const A = {
+        frame: P([(seatTop[0] + htTop[0]) / 2, (seatTop[1] + htTop[1]) / 2]),
+        fork: P(fAt(0.55)),
+        rear_shock: P([(dtMid[0] + rockB[0]) / 2, (dtMid[1] + rockB[1]) / 2]),
+        wheelset: [fax, fay],
+        tires: [r(fax + tireR * 0.72), r(fay - tireR * 0.72)],
+        drivetrain: [r(rax + 16), r(ray - 18)],
+        brakes: [r(fax - 26), r(fay + 6)],
+        cockpit: [r(P(barPt)[0] + 24), r(P(barPt)[1] - 8)],
+        pedals: [r(P(ped)[0] + 6), r(P(ped)[1] + 8)],
+        saddle_post: [r(sad[0] + 12), r(sad[1] - 8)]
+      }[s.key];
+      return {
+        n: s.n, label: s.label, tx: s.tx, ty: s.ty, side: s.side,
+        top: r((s.ty - 20) / 630 * 100) + "%",
+        left: s.side === "start" ? "2.4%" : "auto",
+        right: s.side === "start" ? "auto" : "2.4%",
+        align: s.side === "start" ? "left" : "right",
+        lx: s.side === "start" ? 228 : 772, ly: s.ty - 2,
+        ax: A[0], ay: A[1],
+        value: p ? p.brand + " · " + (fmt ? fmt(p) : "£" + p.gbp.toFixed(2)) : "not picked",
+        picked: !!p,
+        color: (flagged || {})[s.key] ? "#D9634A" : p ? "#E0763F" : "#5F6C62",
+        textColor: p ? "#F2EDE3" : "#93A093",
+        valueColor: (flagged || {})[s.key] ? "#F0937C" : p ? "#E0763F" : "#77836F"
+      };
+    })
+  };
+}
+
+class Component extends DCLogic {
+  state = { country: "GB", component: "", query: "rockshox zeb 170 29 boost", style: "enduro", wheel: "", inStockOnly: false, picks: {} };
+
+  slug(s) { return s.replace(/[^a-z0-9]+/gi, "-").toLowerCase(); }
+
+  filtered() {
+    const s = this.state;
+    const only = this.props.inStockOnly ?? s.inStockOnly;
+    return CATALOGUE
+      .filter(r => !s.component || r.component === s.component)
+      .filter(r => !s.wheel || r.wheel === s.wheel)
+      .filter(r => !only || r.stock === "in")
+      .map(r => ({ ...r, L: landed(r, s.country) }))
+      .filter(r => r.L.serves)
+      .sort((a, b) => (this.props.sortBy === "brand" ? a.brand.localeCompare(b.brand) : a.L.total - b.L.total));
+  }
+
+  hiddenCount() {
+    const s = this.state;
+    return CATALOGUE
+      .filter(r => !s.component || r.component === s.component)
+      .filter(r => !s.wheel || r.wheel === s.wheel)
+      .filter(r => !landed(r, s.country).serves).length;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const rows = this.filtered();
+    const picks = Object.values(s.picks);
+    const C = COUNTRIES[s.country];
+    const fmt = p => money(s.country, landed(p, s.country).total);
+    const total = picks.reduce((n, p) => n + landed(p, s.country).total, 0);
+    const compat = checkCompat(s.style, s.picks, s.country);
+    const hidden = this.hiddenCount();
+    return {
+      gates: [
+        { n: "01", title: "New only", body: "Used and second-hand listings are rejected on the title." },
+        { n: "02", title: "Stock, with evidence", body: "We quote the phrase that proved it — “add to cart”, “in stock”." },
+        { n: "03", title: "The real price", body: "Authoritative modal price. Fees and financing lines thrown out." },
+        { n: "04", title: "A link that loads", body: "Direct product page, checked live. No homepage redirects." }
+      ],
+      stores: ["probikesupply", "chainreactioncycles", "huntbikewheels", "boxcomponents", "icancycling", "winspace", "yoeleo", "aliexpress"],
+      components: COMPONENT_LABELS.map(label => ({
+        label,
+        pick: () => this.setState({ component: s.component === label.replace(" ", "_") ? "" : label.replace(" ", "_") })
+      })),
+      country: s.country,
+      countryLabel: C.name,
+      countryGroups: Object.keys(COUNTRIES).reduce((acc, cc) => {
+        const g = acc.find(x => x.group === COUNTRIES[cc].group) || (acc.push({ group: COUNTRIES[cc].group, items: [] }), acc[acc.length - 1]);
+        g.items.push({ cc, name: COUNTRIES[cc].name });
+        return acc;
+      }, []),
+      taxLine: (s.country === "US" ? Math.round(C.vat * 1000) / 10 + "% sales tax" : Math.round(C.vat * 1000) / 10 + "% VAT")
+        + " · prices in " + C.cur
+        + (C.dutyFree ? " · duty-free under " + money(s.country, C.dutyFree) : " · duty from the first " + C.cur),
+      hidden: hidden,
+      hasHidden: hidden > 0,
+      hiddenLine: hidden + (hidden === 1 ? " listing hidden — that retailer doesn’t deliver to " : " listings hidden — those retailers don’t deliver to ") + C.name,
+      query: s.query,
+      style: s.style,
+      wheel: s.wheel,
+      preset: PRESETS[s.style],
+      stockLabel: (this.props.inStockOnly ?? s.inStockOnly) ? "on" : "off",
+      count: rows.length,
+      onCountry: e => this.setState({ country: e.target.value }),
+      onQuery: e => this.setState({ query: e.target.value }),
+      onStyle: e => this.setState({ style: e.target.value }),
+      onWheel: e => this.setState({ wheel: e.target.value }),
+      onStock: () => this.setState({ inStockOnly: !(this.props.inStockOnly ?? s.inStockOnly) }),
+      visible: rows.map((r, i) => ({
+        ...r,
+        rank: (i + 1 < 10 ? "0" : "") + (i + 1),
+        slotId: "v2-" + this.slug(r.brand + "-" + r.name),
+        hasWheel: SPEC_FLAGS[r.component] ? !!SPEC_FLAGS[r.component].wheel : false,
+        hasTravel: (SPEC_FLAGS[r.component] ? !!SPEC_FLAGS[r.component].travel : false) && !!r.travel,
+        isIn: r.stock === "in",
+        isUnknown: r.stock === "unknown",
+        priceLabel: r.L.label,
+        costLine: r.L.line,
+        listedLine: "listed " + (r.currency === "EUR" ? "€" : r.currency === "USD" ? "$" : "£")
+          + r.price.toLocaleString("en-GB", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+          + " at " + r.retailer + " (" + r.L.origin + ")",
+        shipLine: "delivered to " + C.name + " in ~" + r.L.days + " days · " + r.L.dutyLine,
+        crossing: r.L.crossing,
+        component: r.component.replace("_", " "),
+        add: () => this.setState(st => ({ picks: { ...st.picks, [r.component]: r } }))
+      })),
+      picks: picks.map(p => ({
+        ...p,
+        slotId: "v2-" + this.slug(p.brand + "-" + p.name),
+        money: money(s.country, landed(p, s.country).total),
+        component: p.component.replace("_", " "),
+        remove: () => this.setState(st => { const n = { ...st.picks }; delete n[p.component]; return { picks: n }; })
+      })),
+      d: bikeArt(s.style, s.picks, compat.flagged, fmt),
+      compat: compat.issues,
+      compatCount: compat.count,
+      compatClean: compat.count === 0,
+      styleName: s.style,
+      pickCount: picks.length,
+      empty: picks.length === 0,
+      total: money(s.country, total)
+    };
+  }
+}
+</script>
+</body>
+</html>
