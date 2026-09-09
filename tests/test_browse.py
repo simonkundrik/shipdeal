@@ -12,6 +12,7 @@ assert "£471.70" in line and "BUY CHEAPEST" in line and "Add to build" in line
 assert "import duty" in line and "(NL)" in line
 
 page = browse_render(["fork"], "GB", rows=[row])
-assert "Add to build" in page and "My Build" in page
+assert "Add to build" in page and "buildpanel" in page
+assert "Installed " in page  # build panel Installed n/10 chip
 assert "SHIPDEAL" in page and "Parts that make it to the trailhead" in page
 print("browse tests OK")

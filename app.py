@@ -15,10 +15,12 @@ from populate import cheapest_by_component, load_products
 from countries import (  # noqa: E402
     COUNTRY_INFO, REGION_ALIAS, country_info, groups, money, tax_line,
 )
-from landed import landed_row, sort_by_landed
+from landed import landed, landed_row, sort_by_landed
 from regions import REGIONS, RETAILERS, retailers_for, shipping_hint
 from stock_checker import check_stock, passes_stock
 from search import find_cheapest
+from bike import GEO_MM, SLOTS as BIKE_SLOTS, bike_svg
+from compat import compat_issues
 
 
 def esc(s):
@@ -101,7 +103,76 @@ button:hover{background:var(--ink);color:var(--paper)}
 .footer{background:var(--paper2);border-radius:18px;padding:18px;margin-top:18px;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.12em}
 .message{margin:8px 0;color:var(--ink60)}
 .note-dm{background:var(--paper2);border-radius:999px;padding:8px 18px;font-family:'DM Mono',monospace;font-size:12.5px;color:#6B5A50;margin:14px 0}
+.buildpanel{background:var(--ink);color:var(--paper);border-radius:900px;padding:32px}
+.buildpanel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.buildpanel-title{font-family:'Big Shoulders Display',sans-serif;font-weight:800;font-size:clamp(28px,3.2vw,42px);text-transform:uppercase;color:var(--paper)}
+.buildpanel-readout{font-family:'DM Mono',monospace;font-weight:500;color:var(--paper);margin-top:4px}
+.buildpanel-chip{color:var(--paper);border-radius:999px;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase}
+.buildpanel-svg{position:relative;width:100%;margin-top:18px}
+.callout{position:absolute;width:150%;font-family:'Barlow Condensed',sans-serif}
+.callout-label{font-weight:700;font-size:14px;text-transform:uppercase;padding-left:8px}
+.callout-value{font-family:'DM Mono',monospace;font-weight:500;font-size:12px;padding-left:8px}
+.compat{display:flex;align-items:flex-start;gap:10px;background:rgba(242,237,227,.05);border-radius:242px;padding:14px 18px;margin-top:10px}
+.compat-dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px;margin-top:4px}
+.compat-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase}
+.compat-detail{font-family:'Newsreader',Georgia,serif}
 """
+
+
+def build_panel(style, picks, country):
+    """Trailhead build panel: geometry readout, bike diagram with 10 slot callouts, compat cards."""
+    g = GEO_MM.get(style, GEO_MM["enduro"])
+    ha, travel, dual = g["ha"], g["travel"], g["dual"]
+    wheel = style_defaults(style)["wheel"]
+    crown = "dual-crown" if dual else "single-crown"
+    chip_bg = "rgba(224,118,244,.16)" if False else "rgba(150,110,225,.16)"
+    issues = compat_issues(style, picks, country)
+    flagged_keys = set()
+    for issue in issues:
+        flagged_keys.update(issue.get("keys", []))
+
+    callouts = []
+    for slot in BIKE_SLOTS:
+        key, label, n, ty, side = slot["key"], slot["label"], slot["n"], slot["ty"], slot["side"]
+        p = picks.get(key)
+        top = round((ty - 58) / 630 * 100, 2)
+        side_css = "left:2.4%" if side == "left" else "right:2.4%"
+        status = "flagged" if key in flagged_keys else ("picked" if p else "empty")
+        accent = {"picked": "#E0763F", "empty": "#5F6C62", "flagged": "#D9634A"}[status]
+        label_color = "#93A093" if status == "empty" else "#F2EDE3"
+        value_color = {"flagged": "#F0937C", "picked": "#E0763F", "empty": "#77836F"}[status]
+        if p:
+            L = landed(p.get("price_gbp") or 0.0, p.get("retailer") or "", country)
+            total_gbp = L.get("total_gbp")
+            if total_gbp is None:
+                total_gbp = p.get("price_gbp") or 0.0
+            value = f"{esc(p.get('brand', ''))} · {esc(money(country, total_gbp))}"
+        else:
+            value = "not picked"
+        callouts.append(
+            f"<div class='callout' style='top:{top}%;{side_css};width:21%;border-left:3px solid {accent}'>"
+            f"<div class='callout-label' style='color:{label_color}'>{esc(n)} · {esc(label)}</div>"
+            f"<div class='callout-value' style='color:{value_color}'>{value}</div>"
+            f"</div>"
+        )
+
+    dot_colors = {"error": "#D9634A", "warn": "#D8A23C", "ok": "#6FBE7E"}
+    compat_cards = "".join(
+        f"<div class='compat'><span class='compat-dot' style='background:{dot_colors.get(i['level'], '#6FBE7E')}'></span>"
+        f"<div><div class='compat-title'>{esc(i['title'])}</div>"
+        f"<div class='compat-detail'>{esc(i['detail'])}</div></div></div>"
+        for i in issues
+    )
+    n_installed = len(picks)
+    return f"""<div class='buildpanel'>
+<div class='buildpanel-head'>
+<div><div class='buildpanel-title'>Your {esc(style)} build</div>
+<div class='buildpanel-readout'>head angle {ha}&deg; · fork {travel}mm · {esc(wheel)}in wheels · {crown}</div></div>
+<div class='buildpanel-chip' style='background:{chip_bg};color:var(--paper)'>Installed {n_installed}/10</div>
+</div>
+<div class='buildpanel-svg'>{bike_svg(style, picks)}{''.join(callouts)}</div>
+{compat_cards}
+</div>"""
 
 
 
@@ -133,15 +204,11 @@ def render(country="GB", query="", brand="", budget=600, results=None, message="
             f"<button onclick='addToBuild(\"{esc(r['component'] or component)}\","
             f"\"{esc(r['url'])}\",\"{esc(r['brand'])}\",\"{esc(r['price'])}\","
             f"\"{esc(r['currency'])}\",{esc(r['price_gbp'])},\"{esc(r.get('image') or '')}\","
-            f"\"{esc(r.get('ships') or '')}\")'>Add to build</button>"
+            f"\"{esc(r.get('ships') or '')}\",\"{esc(r.get('retailer') or '')}\","
+            f"\"{esc(r.get('wheel') or '')}\",\"{esc(r.get('travel') or 0)}\","
+            f"\"{esc(r.get('stock') or '')}\")'>Add to build</button>"
             f"</div>")
     picks = json.loads(load())
-    my_items = "".join(
-        f"<li>{esc(p['brand'])} — {esc(p['price'])} {esc(p['currency'])} (~£{esc(p['price_gbp'])}) "
-        f"<a href='{esc(p['url'])}'>buy</a> "
-        f"<button onclick='rmFromBuild(\"{esc(p['component'])}\")'>remove</button></li>"
-        for p in picks.values())
-    my_total = total(picks)
     proof = """<div class='proof'>
   <div class='badge'><b>01</b><span>NEW ONLY</span><small>Used and second-hand listings are rejected on the title.</small></div>
   <div class='badge'><b>02</b><span>STOCK, WITH EVIDENCE</span><small>We quote the phrase that proved it — &ldquo;add to cart&rdquo;, &ldquo;in stock&rdquo;.</small></div>
@@ -182,7 +249,7 @@ and track your assembled bike in <i>My Build</i>.</div>
 <div class='ring'><b>RETAILER RING · LIVE SCRAPE</b><br>{esc(retail_ring)}</div>
 <div class='card'><h3>CHEAPEST FIRST — sorted on landed cost to {esc(country)}</h3>
 <div class='note-dm'>{esc(landed_note)}</div></div>
-<div class='build'><h3>My Build</h3><ul>{my_items}</ul><b>Total: £{my_total}</b></div>
+{build_panel(f.style, picks, country)}
 {''.join(cards)}
 <div class='footer'>SHIPDEAL · NO USED · NO DEAD LINKS · NO GENERIC SEARCH JUNK</div>
 </div>
@@ -246,12 +313,6 @@ def browse_render(components, country="GB", rows=None):
     priced, hidden = sort_by_landed(rows, country)
     cards = "".join(row_line(r, country) for r in priced)
     picks = json.loads(load())
-    my_items = "".join(
-        f"<li>{esc(p['brand'])} — {esc(p['price'])} {esc(p['currency'])} (~£{esc(p['price_gbp'])})"
-        + (f" · +£{esc(p.get('total_gbp'))} incl delivery" if p.get("total_gbp") is not None else "")
-        + f"<a href='{esc(p['url'])}'>buy</a>"
-        f"<button onclick='rmFromBuild(\"{esc(p['component'])}\")'>remove</button></li>"
-        for p in picks.values())
     my_total = total(picks)
     cname = ", ".join(components)
     country_opts = "".join(
@@ -287,7 +348,7 @@ def browse_render(components, country="GB", rows=None):
 <div class='note-dm'>{esc(info['name'])} · landed price = net + ship + duty + VAT + clearance; same listing priced to DE differs from SE.</div>
 </div>
 {hidden_note}
-<div class='kit'><h3>My Build</h3><ul>{my_items}</ul><b>Landed in {esc(country)}: £{my_total}</b></div>
+{build_panel('enduro', picks, country)}
 {cards}
 <div class='footer'>SHIPDEAL · NO USED · NO DEAD LINKS · NO GENERIC SEARCH JUNK</div>
 </div>
